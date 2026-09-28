@@ -1,4 +1,4 @@
-# Universal Multiblock Viewer 0.2 authoring — U/R lookups
+# Universal Multiblock Viewer 0.2 authoring
 
 Definitions are client resources. Install the resource-containing mod or resource pack on every client that should view them; they are documentation data and are not synced from a server in 0.2.
 
