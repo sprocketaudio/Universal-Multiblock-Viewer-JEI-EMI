@@ -1,12 +1,18 @@
-# Universal Multiblock Viewer 0.2 authoring
+# JSON Authoring
 
-Definitions are client resources. Install the resource-containing mod or resource pack on every client that should view them; they are documentation data and are not synced from a server in 0.2.
+Universal Multiblock Viewer displays multiblock building guides from JSON files. A definition is client-side documentation only: it never forms a machine, changes blocks, or changes how another mod works.
 
-Place each JSON file at:
+Install the resource-containing mod or resource pack on every client that should view a guide. Definitions are not synced from a server.
+
+## File location
+
+Place each definition at:
 
 `assets/<your namespace>/universal_multiblock_viewer/multiblocks/<name>.json`
 
-The document `id` is the stable identity used by both recipe viewers. `lookups` replaces the retired `associated_items` field: uppercase `U` lists item IDs whose Uses view shows the guide; uppercase `R` lists IDs whose Recipes view shows the **same** guide. Normally U lists the main controller. Extra U items or R entries are optional. At least one nonempty list is required. No legacy `associated_items` parsing is provided.
+The document `id` is the guide's stable identity. It should match the namespace of the resource pack or mod that supplies the file.
+
+## Example
 
 ```json
 {
@@ -44,16 +50,31 @@ The document `id` is the stable identity used by both recipe viewers. `lookups` 
 }
 ```
 
-`layers` are bottom-to-top. Each layer is an ordered list of front-to-back rows, and each row is left-to-right. A space is air. Every layer must have the same number of rows and every row must have the same width.
+## Structure layout
 
-Each palette entry must have exactly one of `block`, `tag`, or `any_of`. `any_of` options each contain exactly one `block` or `tag`; `default` must name one of those option IDs. The BOM counts one default per position, never every alternative. Dimensions are limited to 64 in each direction and 4,096 non-air positions per variant.
+`layers` are written bottom-to-top. Each layer is an ordered list of front-to-back rows, and each row is left-to-right. A space is air. Every layer must have the same number of rows and every row must have the same width.
 
-Invalid documents are skipped without crashing the client. The log identifies the resource and the failing variant/layer/row/cell path.
+## Palette entries and alternatives
 
-## Lookup rules and testing
+Each palette entry must have exactly one of `block`, `tag`, or `any_of`.
 
-Both arrays are optional but at least one must be nonempty. Use registered item IDs (not unplaceable block IDs). The same item may be listed under both U and R; both open **one shared guide**. Other ingredients are **not** made lookup triggers automatically. The JSON above is illustrative and references fictional `example:` IDs; replace them with real registered items before testing.
+- `block` names one exact block.
+- `tag` accepts any block in that block tag.
+- `any_of` lists the valid choices for that position. Each choice contains one `block` or `tag`; `default` must name one of those choice IDs.
 
-Version 0.2 ships with no multiblock definitions. Add a JSON definition through your datapack or resource pack before testing. Test each host with U and R separately, and confirm existing normal crafting/Uses entries remain available.
+The materials list counts one default choice per position, never every alternative. Definitions are limited to 64 blocks in each direction and 4,096 non-air positions per variant.
 
-The structure definition format remains `"format": 1` in 0.2; this lookup-field change replaces the original draft, with no backward compatibility.
+## JEI and EMI lookups
+
+`lookups` controls how players find a guide in JEI and EMI.
+
+- `U` lists item IDs whose Uses view shows the guide. Normally this is the multiblock controller or core block.
+- `R` lists item IDs whose Recipes view shows the same guide.
+
+Both arrays are optional, but at least one must contain an item. Use registered item IDs, not unplaceable block IDs. The same item may appear in both lists. Materials and alternatives do not automatically become lookup triggers.
+
+## Testing and errors
+
+Universal Multiblock Viewer ships without definitions. Add your JSON through a resource pack or datapack before testing. Test each host with U and R separately, and confirm existing normal crafting and Uses entries remain available.
+
+Invalid files are skipped without crashing the client. The log identifies the resource and the failing variant, layer, row, or cell path. The current JSON format is `"format": 1`.
