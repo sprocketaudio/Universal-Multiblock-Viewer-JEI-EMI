@@ -1,0 +1,30 @@
+### Gradle ###
+.gradle
+.gradle-user
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/**/build/
+
+### IDEs ###
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+.vscode/
+
+### Local Codex and project guidance ###
+AGENTS.md
+.agents/
+.codex/
+Docs/
+
+### Minecraft ###
+run/
+logs/
+crash-reports/
+*.log
+hs_err_pid*.log
+!**/src/**/run/
+**/src/generated/**/.cache/
+repo/

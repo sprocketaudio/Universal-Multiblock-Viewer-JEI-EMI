@@ -1,0 +1,9 @@
+{
+  "modmenu.nameTranslation.universal_multiblock_viewer": "Universal Multiblock Viewer (JEI/EMI)",
+  "jei.universal_multiblock_viewer.multiblock": "Multiblock",
+  "emi.category.universal_multiblock_viewer.multiblock": "Multiblock",
+  "universal_multiblock_viewer.viewer.all_layers": "All layers",
+  "universal_multiblock_viewer.viewer.layer": "Layer %s / %s",
+  "universal_multiblock_viewer.viewer.alternatives": "Alternatives: %s",
+  "universal_multiblock_viewer.viewer.help": "Click a block | Right click cancel | Left drag: rotate | Right drag: move | Wheel: zoom"
+}

@@ -1,0 +1,145 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'net.neoforged.gradle.userdev' version '7.1.38'
+}
+
+version = mod_version
+group = mod_group_id
+
+base {
+    archivesName = mod_id
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+sourceSets.main.resources {
+    srcDir('src/generated/resources')
+}
+
+repositories {
+    maven { url = 'https://maven.blamejared.com' }
+    maven { url = 'https://maven.terraformersmc.com/releases/' }
+}
+
+runs {
+    configureEach {
+        systemProperty 'forge.logging.console.level', 'info'
+        workingDirectory project.layout.projectDirectory.dir('run').dir(name)
+        modSource project.sourceSets.main
+    }
+
+    client {
+        systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+    }
+
+    server {
+        systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        argument '--nogui'
+    }
+
+    gameTestServer {
+        systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+    }
+
+    data {
+        arguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+    }
+}
+
+configurations {
+    runtimeClasspath.extendsFrom localRuntime
+}
+
+dependencies {
+    implementation "net.neoforged:neoforge:${neo_version}"
+
+    // Compile against JEI's API and include the full mod only in development runs.
+    compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
+    compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
+    if (!project.hasProperty('skipJeiRuntime')) {
+        localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+    }
+
+    // EMI is optional at runtime. The adapter is isolated from common bootstrap.
+    compileOnly "dev.emi:emi-neoforge:${emi_version}:api"
+    if (!project.hasProperty('skipEmiRuntime')) {
+        localRuntime "dev.emi:emi-neoforge:${emi_version}"
+    }
+
+    testImplementation platform('org.junit:junit-bom:5.11.4')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.withType(ProcessResources).configureEach {
+    // 0.2 intentionally ships no built-in multiblock definitions.
+    exclude 'assets/universal_multiblock_viewer/universal_multiblock_viewer/multiblocks/**'
+    def replaceProperties = [
+        minecraft_version      : minecraft_version,
+        minecraft_version_range: minecraft_version_range,
+        neo_version            : neo_version,
+        loader_version_range   : loader_version_range,
+        mod_id                 : mod_id,
+        mod_name               : mod_name,
+        mod_license            : mod_license,
+        mod_version            : mod_version,
+        jei_version            : jei_version,
+        emi_version            : emi_version
+    ]
+    inputs.properties replaceProperties
+    filesMatching('META-INF/neoforge.mods.toml') {
+        expand replaceProperties
+    }
+}
+
+tasks.named('jar', Jar).configure {
+    exclude 'assets/universal_multiblock_viewer/universal_multiblock_viewer/multiblocks'
+    exclude 'assets/universal_multiblock_viewer/universal_multiblock_viewer/multiblocks/**'
+}
+
+publishing {
+    publications {
+        register('mavenJava', MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven { url "file://${project.projectDir}/repo" }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+tasks.named('test', Test).configure {
+    useJUnitPlatform()
+}
+
+// Windows/IntelliJ can mark generated Gradle directories read-only. Gradle then fails before a
+// compile/resource task begins while trying to replace its previous output. Normalize only
+// generated output before every task graph so command-line and IDE delegated builds recover.
+def normalizeBuildOutputAttributes = tasks.register('normalizeBuildOutputAttributes') {
+    outputs.upToDateWhen { false }
+    doLast {
+        def outputRoot = layout.buildDirectory.get().asFile
+        if (!outputRoot.exists()) return
+        // File#setWritable does not reliably clear the Windows directory ReadOnly attribute.
+        def paths = java.nio.file.Files.walk(outputRoot.toPath())
+        try {
+            paths.forEach { path ->
+                def view = java.nio.file.Files.getFileAttributeView(path, java.nio.file.attribute.DosFileAttributeView)
+                if (view != null) view.setReadOnly(false)
+            }
+        } finally {
+            paths.close()
+        }
+    }
+}
+
+tasks.configureEach {
+    if (name != normalizeBuildOutputAttributes.name) {
+        dependsOn(normalizeBuildOutputAttributes)
+    }
+}
