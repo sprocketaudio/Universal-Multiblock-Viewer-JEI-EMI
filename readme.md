@@ -14,7 +14,7 @@ It displays structures from existing mods, helping players understand how to bui
 
 **JSON definitions are currently required.** The viewer does not automatically discover every multiblock in your modpack.
 
-The Celestial Orrery shown in the screenshots and video is a fictional example structure created to demonstrate the viewer's features. It is not a functional machine added to Minecraft.
+The Celestial Orrery shown in the screenshots is a fictional example structure created to demonstrate the viewer's features. It is not a functional machine added to Minecraft.
 
 ## Features
 
