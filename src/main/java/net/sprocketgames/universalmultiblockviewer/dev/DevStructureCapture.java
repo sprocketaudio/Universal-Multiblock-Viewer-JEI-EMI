@@ -56,7 +56,9 @@ public final class DevStructureCapture {
                 StringBuilder row = new StringBuilder();
                 for (int x = bounds.min.getX(); x <= bounds.max.getX(); x++) {
                     BlockState state = level.getBlockState(new BlockPos(x, y, z));
-                    if (state.isAir()) { row.append(' '); continue; }
+                    // Some specialised visual blocks deliberately report an air-like collision state.
+                    // Only the actual air block is an empty cell in a captured guide.
+                    if (state.getBlock() == Blocks.AIR) { row.append(' '); continue; }
                     StateKey key = StateKey.from(state);
                     Character symbol = palette.get(key);
                     if (symbol == null) {
@@ -102,7 +104,7 @@ public final class DevStructureCapture {
         public boolean recipes() { return recipes; }
         public static LookupMode parse(String raw) { return switch (raw.toLowerCase(java.util.Locale.ROOT)) { case "u" -> U; case "r" -> R; case "both" -> BOTH; default -> throw new IllegalArgumentException("Use U, R, or both."); }; }
     }
-    private record StateKey(ResourceLocation blockId, Map<String, String> state) {
+    private record StateKey(ResourceLocation blockId, Map<String, String> state, ResourceLocation materialItem) {
         static StateKey from(BlockState state) {
             Map<String, String> values = new LinkedHashMap<>(); BlockState defaults = state.getBlock().defaultBlockState();
             state.getValues().forEach((property, value) -> {
@@ -110,9 +112,33 @@ public final class DevStructureCapture {
                     values.put(property.getName(), propertyName(property, value));
                 }
             });
-            return new StateKey(BuiltInRegistries.BLOCK.getKey(state.getBlock()), Map.copyOf(values));
+            ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(state.getBlock());
+            return new StateKey(blockId, Map.copyOf(values), inferredMaterialItem(state.getBlock(), blockId));
         }
         @SuppressWarnings({"rawtypes", "unchecked"}) private static String propertyName(Property property, Comparable value) { return property.getName(value); }
-        JsonObject toJson() { JsonObject value = new JsonObject(); value.addProperty("block", blockId.toString()); if (!state.isEmpty()) { JsonObject states = new JsonObject(); state.forEach(states::addProperty); value.add("state", states); } return value; }
+        JsonObject toJson() {
+            JsonObject value = new JsonObject(); value.addProperty("block", blockId.toString());
+            if (!state.isEmpty()) { JsonObject states = new JsonObject(); state.forEach(states::addProperty); value.add("state", states); }
+            if (materialItem != null) {
+                JsonObject material = new JsonObject(); material.addProperty("item", materialItem.toString()); material.addProperty("kind", "reusable_tool"); value.add("material", material);
+            }
+            return value;
+        }
+    }
+
+    /**
+     * A placed visual block without an item must have a presentation item for the BOM.
+     * First retain any normal block item. Otherwise try conventional registry names such as
+     * chalk_glyph_lime to chalk_lime, but leave unknown cases untouched for author review.
+     */
+    private static ResourceLocation inferredMaterialItem(Block block, ResourceLocation blockId) {
+        if (block.asItem() != net.minecraft.world.item.Items.AIR) return null;
+        List<String> candidates = List.of(blockId.getPath().replace("_glyph_", "_"), blockId.getPath().replace("glyph_", ""));
+        for (String path : candidates) {
+            ResourceLocation candidate = ResourceLocation.fromNamespaceAndPath(blockId.getNamespace(), path);
+            var item = BuiltInRegistries.ITEM.get(candidate);
+            if (item != null && item != net.minecraft.world.item.Items.AIR) return candidate;
+        }
+        return null;
     }
 }
