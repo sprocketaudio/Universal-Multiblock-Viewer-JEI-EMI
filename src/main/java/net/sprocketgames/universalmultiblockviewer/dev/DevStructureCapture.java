@@ -26,12 +26,16 @@ public final class DevStructureCapture {
     private static final String SYMBOLS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     private static BlockPos first;
     private static BlockPos second;
+    private static BlockPos master;
+    private static LookupMode masterLookup = LookupMode.U;
     private DevStructureCapture() { }
     public static Optional<BlockPos> first() { return Optional.ofNullable(first); }
     public static Optional<BlockPos> second() { return Optional.ofNullable(second); }
+    public static Optional<BlockPos> master() { return Optional.ofNullable(master); }
     public static void setFirst(BlockPos position) { first = position.immutable(); second = null; }
     public static void setSecond(BlockPos position) { second = position.immutable(); }
-    public static void clear() { first = null; second = null; }
+    public static void setMaster(BlockPos position, LookupMode lookup) { master = position.immutable(); masterLookup = lookup; }
+    public static void clear() { first = null; second = null; master = null; masterLookup = LookupMode.U; }
     public static Optional<Bounds> bounds() {
         if (first == null || second == null) return Optional.empty();
         return Optional.of(new Bounds(BlockPos.min(first, second), BlockPos.max(first, second)));
@@ -45,7 +49,7 @@ public final class DevStructureCapture {
         if (level == null) throw new IllegalStateException("No world is loaded.");
         LinkedHashMap<StateKey, Character> palette = new LinkedHashMap<>();
         JsonArray layers = new JsonArray();
-        ResourceLocation lookup = null;
+        ResourceLocation fallbackLookup = null;
         for (int y = bounds.min.getY(); y <= bounds.max.getY(); y++) {
             JsonArray layer = new JsonArray();
             for (int z = bounds.min.getZ(); z <= bounds.max.getZ(); z++) {
@@ -60,15 +64,19 @@ public final class DevStructureCapture {
                         symbol = SYMBOLS.charAt(palette.size()); palette.put(key, symbol);
                     }
                     row.append(symbol);
-                    if (lookup == null && state.getBlock().asItem() != net.minecraft.world.item.Items.AIR) lookup = BuiltInRegistries.ITEM.getKey(state.getBlock().asItem());
+                    if (fallbackLookup == null && state.getBlock().asItem() != net.minecraft.world.item.Items.AIR) fallbackLookup = BuiltInRegistries.ITEM.getKey(state.getBlock().asItem());
                 }
                 layer.add(row.toString());
             }
             layers.add(layer);
         }
-        if (lookup == null) throw new IllegalArgumentException("Capture has no blocks with an item form for its initial U lookup.");
+        ResourceLocation lookup = masterLookupItem().orElse(fallbackLookup);
+        if (lookup == null) throw new IllegalArgumentException("Capture has no blocks with an item form for its initial lookup.");
         JsonObject root = new JsonObject(); root.addProperty("format", 1); root.addProperty("id", namespace + ":" + fileName); root.addProperty("title", title(fileName));
-        JsonObject lookups = new JsonObject(); JsonArray uses = new JsonArray(); uses.add(lookup.toString()); lookups.add("U", uses); root.add("lookups", lookups); root.addProperty("default_variant", "captured");
+        JsonObject lookups = new JsonObject();
+        if (masterLookup.uses()) { JsonArray uses = new JsonArray(); uses.add(lookup.toString()); lookups.add("U", uses); }
+        if (masterLookup.recipes()) { JsonArray recipes = new JsonArray(); recipes.add(lookup.toString()); lookups.add("R", recipes); }
+        root.add("lookups", lookups); root.addProperty("default_variant", "captured");
         JsonObject variant = new JsonObject(); variant.addProperty("id", "captured"); variant.addProperty("title", "Captured");
         JsonObject paletteJson = new JsonObject();
         palette.forEach((key, symbol) -> paletteJson.add(String.valueOf(symbol), key.toJson()));
@@ -79,7 +87,21 @@ public final class DevStructureCapture {
         return output;
     }
     private static String title(String fileName) { return java.util.Arrays.stream(fileName.replace('-', '_').split("_")).filter(s -> !s.isBlank()).map(s -> Character.toUpperCase(s.charAt(0)) + s.substring(1)).collect(java.util.stream.Collectors.joining(" ")); }
+    private static Optional<ResourceLocation> masterLookupItem() {
+        var level = Minecraft.getInstance().level;
+        if (master == null || level == null) return Optional.empty();
+        var item = level.getBlockState(master).getBlock().asItem();
+        return item == net.minecraft.world.item.Items.AIR ? Optional.empty() : Optional.of(BuiltInRegistries.ITEM.getKey(item));
+    }
     public record Bounds(BlockPos min, BlockPos max) { }
+    public enum LookupMode {
+        U(true, false), R(false, true), BOTH(true, true);
+        private final boolean uses, recipes;
+        LookupMode(boolean uses, boolean recipes) { this.uses = uses; this.recipes = recipes; }
+        public boolean uses() { return uses; }
+        public boolean recipes() { return recipes; }
+        public static LookupMode parse(String raw) { return switch (raw.toLowerCase(java.util.Locale.ROOT)) { case "u" -> U; case "r" -> R; case "both" -> BOTH; default -> throw new IllegalArgumentException("Use U, R, or both."); }; }
+    }
     private record StateKey(ResourceLocation blockId, Map<String, String> state) {
         static StateKey from(BlockState state) {
             Map<String, String> values = new LinkedHashMap<>(); BlockState defaults = state.getBlock().defaultBlockState();

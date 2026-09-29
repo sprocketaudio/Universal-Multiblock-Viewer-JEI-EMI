@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.api.distmarker.Dist;
@@ -33,6 +34,7 @@ public final class DevStructureCaptureClientEvents {
         event.getDispatcher().register(Commands.literal("umvdev")
             .then(Commands.literal("corner1").executes(context -> corner(true)))
             .then(Commands.literal("corner2").executes(context -> corner(false)))
+            .then(Commands.literal("master").then(Commands.argument("lookup", StringArgumentType.word()).suggests((context, builder) -> SharedSuggestionProvider.suggest(List.of("U", "R", "both"), builder)).executes(context -> master(StringArgumentType.getString(context, "lookup")))))
             .then(Commands.literal("clear").executes(context -> { DevStructureCapture.clear(); message("UMV capture cleared."); return 1; }))
             .then(save));
     }
@@ -55,6 +57,17 @@ public final class DevStructureCaptureClientEvents {
         try { message("Saved UMV capture: " + DevStructureCapture.save(namespace, fileName)); return 1; }
         catch (IllegalArgumentException | IllegalStateException | IOException exception) { message("UMV capture failed: " + exception.getMessage()); UniversalMultiblockViewer.LOGGER.warn("UMV capture save failed", exception); return 0; }
     }
+    private static int master(String rawLookup) {
+        if (!available()) return 0;
+        if (!(Minecraft.getInstance().hitResult instanceof BlockHitResult hit)) { message("Look at a block before setting the master."); return 0; }
+        try {
+            var item = Minecraft.getInstance().level.getBlockState(hit.getBlockPos()).getBlock().asItem();
+            if (item == net.minecraft.world.item.Items.AIR) { message("That block has no item form and cannot be the lookup master."); return 0; }
+            DevStructureCapture.setMaster(hit.getBlockPos(), DevStructureCapture.LookupMode.parse(rawLookup));
+            message("UMV master: " + BuiltInRegistries.ITEM.getKey(item) + " - " + rawLookup.toUpperCase(java.util.Locale.ROOT));
+            return 1;
+        } catch (IllegalArgumentException exception) { message(exception.getMessage()); return 0; }
+    }
     private static boolean available() { return DevInstantBuildClient.available(); }
     private static void message(String value) { var player = Minecraft.getInstance().player; if (player != null) player.displayClientMessage(Component.literal(value), false); }
     @SubscribeEvent public static void render(RenderLevelStageEvent event) {
@@ -66,6 +79,7 @@ public final class DevStructureCaptureClientEvents {
             MultiBufferSource.BufferSource buffers = MultiBufferSource.immediate(memory); var vertices = buffers.getBuffer(RenderType.lines());
             if (bounds.isPresent()) { var box = bounds.get(); LevelRenderer.renderLineBox(pose, vertices, box.min().getX(), box.min().getY(), box.min().getZ(), box.max().getX() + 1, box.max().getY() + 1, box.max().getZ() + 1, 1.0F, 0.65F, 0.12F, 1.0F); }
             else DevStructureCapture.first().ifPresent(pos -> LevelRenderer.renderLineBox(pose, vertices, pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1, 1.0F, 0.65F, 0.12F, 1.0F));
+            DevStructureCapture.master().ifPresent(pos -> LevelRenderer.renderLineBox(pose, vertices, pos.getX() - 0.01D, pos.getY() - 0.01D, pos.getZ() - 0.01D, pos.getX() + 1.01D, pos.getY() + 1.01D, pos.getZ() + 1.01D, 0.35F, 0.9F, 0.45F, 1.0F));
             buffers.endBatch(RenderType.lines());
         } finally { pose.popPose(); }
     }
