@@ -1,0 +1,57 @@
+{
+  "format": 1,
+  "id": "umv_fa:clibano",
+  "title": "Clibano",
+  "description": "Build the frame, then use Mundabitur Dust on the Clibano Core.",
+  "provenance": {
+    "source_mod": "forbidden_arcanus",
+    "tested_version": "2.6.1",
+    "notes": "This pattern requires in-game verification before release."
+  },
+  "default_variant": "base",
+  "variants": [
+    {
+      "id": "base",
+      "title": "Base frame",
+      "palette": {
+        "P": {
+          "block": "forbidden_arcanus:polished_darkstone",
+          "label": "Polished Darkstone"
+        },
+        "B": {
+          "block": "forbidden_arcanus:polished_darkstone_bricks",
+          "label": "Polished Darkstone Bricks"
+        },
+        "C": {
+          "block": "forbidden_arcanus:clibano_core",
+          "label": "Clibano Core"
+        }
+      },
+      "layers": [
+        [
+          "PBP",
+          "BBB",
+          "PBP"
+        ],
+        [
+          "BBB",
+          "B B",
+          "BCB"
+        ],
+        [
+          "PBP",
+          "BBB",
+          "PBP"
+        ]
+      ]
+    }
+  ],
+  "lookups": {
+    "U": [
+      "forbidden_arcanus:clibano_core"
+    ],
+    "R": [
+      "forbidden_arcanus:clibano_core"
+    ]
+  }
+}

@@ -1,0 +1,121 @@
+{
+  "format": 1,
+  "id": "umv_occultism:possess_djinni",
+  "title": "Ihagan's Enthrallment",
+  "description": "Force a Djinni to possess a nearby creature for versatile possession and familiar rituals.",
+  "provenance": {
+    "source_mod": "occultism",
+    "tested_version": "1.224.4",
+    "notes": "Verified against Occultism 1.224.4 ritual data."
+  },
+  "lookups": {
+    "U": [
+      "occultism:golden_sacrificial_bowl"
+    ]
+  },
+  "default_variant": "ritual_layout",
+  "variants": [
+    {
+      "id": "ritual_layout",
+      "title": "Ritual layout",
+      "palette": {
+        "0": {
+          "label": "Central sacrificial bowl",
+          "any_of": [
+            {
+              "block": "occultism:golden_sacrificial_bowl"
+            },
+            {
+              "tag": "occultism:center_sacrificial_bowl"
+            }
+          ],
+          "default": "occultism:golden_sacrificial_bowl"
+        },
+        "1": {
+          "label": "Accepted candle",
+          "any_of": [
+            {
+              "block": "minecraft:candle"
+            },
+            {
+              "tag": "minecraft:candles"
+            }
+          ],
+          "default": "minecraft:candle"
+        },
+        "2": {
+          "block": "minecraft:skeleton_skull"
+        },
+        "L": {
+          "label": "Accepted glyphs lime",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_lime",
+              "material": { "item": "occultism:chalk_lime", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:glyphs_lime"
+            }
+          ],
+          "default": "occultism:chalk_glyph_lime"
+        },
+        "S": {
+          "label": "Accepted foundation glyphs no white",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_light_gray",
+              "material": { "item": "occultism:chalk_light_gray", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:foundation_glyphs_no_white"
+            }
+          ],
+          "default": "occultism:chalk_glyph_light_gray"
+        },
+        "W": {
+          "label": "Accepted foundation glyphs any",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_white",
+              "material": { "item": "occultism:chalk_white", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:foundation_glyphs_any"
+            }
+          ],
+          "default": "occultism:chalk_glyph_white"
+        },
+        "Y": {
+          "label": "Accepted glyphs yellow",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_gold",
+              "material": { "item": "occultism:chalk_gold", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:glyphs_yellow"
+            }
+          ],
+          "default": "occultism:chalk_glyph_gold"
+        }
+      },
+      "layers": [
+        [
+          "             ",
+          "      L      ",
+          "     L2L     ",
+          "    Y W Y    ",
+          "   Y1S1S1Y   ",
+          "  L S Y S L  ",
+          " L2W1Y0Y1W2L ",
+          "  L S Y S L  ",
+          "   Y1S1S1Y   ",
+          "    Y W Y    ",
+          "     L2L     ",
+          "      L      ",
+          "             "
+        ]
+      ]
+    }
+  ]
+}

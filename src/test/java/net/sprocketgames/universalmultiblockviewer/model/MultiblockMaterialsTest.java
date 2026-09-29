@@ -43,4 +43,23 @@ class MultiblockMaterialsTest {
         assertEquals(rune, materials.getFirst().requirement().defaultBlock());
         assertEquals(8, materials.getFirst().count());
     }
+
+    @Test
+    void reusableToolsCountOnceWhileRetainingAllPlacedPositions() {
+        BlockOption chalkMark = new BlockOption(BlockOption.Kind.BLOCK, ResourceLocation.parse("minecraft:stone"), Map.of("axis", "x"),
+            new MaterialPresentation(ResourceLocation.parse("minecraft:flint_and_steel"), MaterialPresentation.Kind.REUSABLE_TOOL));
+        BlockOption anotherOrientation = new BlockOption(BlockOption.Kind.BLOCK, ResourceLocation.parse("minecraft:stone"), Map.of("axis", "z"),
+            new MaterialPresentation(ResourceLocation.parse("minecraft:flint_and_steel"), MaterialPresentation.Kind.REUSABLE_TOOL));
+        Map<GridPos, BlockRequirement> cells = new LinkedHashMap<>();
+        cells.put(new GridPos(0, 0, 0), new BlockRequirement(List.of(chalkMark), 0, "Mark"));
+        cells.put(new GridPos(1, 0, 0), new BlockRequirement(List.of(anotherOrientation), 0, "Mark"));
+        cells.put(new GridPos(2, 0, 0), new BlockRequirement(List.of(chalkMark), 0, "Mark"));
+
+        List<MaterialEntry> materials = MultiblockMaterials.forVariant(new StructureVariant("marks", "Marks", 3, 1, 1, cells));
+
+        assertEquals(1, materials.size());
+        assertEquals(1, materials.getFirst().count());
+        assertEquals(3, materials.getFirst().placedCount());
+        assertEquals(MaterialPresentation.Kind.REUSABLE_TOOL, materials.getFirst().kind());
+    }
 }

@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.neoforged.neoforge.client.event.ScreenEvent;
+import dev.emi.emi.api.EmiApi;
 import net.sprocketgames.universalmultiblockviewer.viewer.ViewerState;
 import net.sprocketgames.universalmultiblockviewer.client.ViewerButton;
 
@@ -21,21 +22,23 @@ final class EmiLayerInputHandler {
         if (event.getButton() != InputConstants.MOUSE_BUTTON_LEFT || current == null || current.screen != Minecraft.getInstance().screen) return;
         double x = event.getMouseX() - current.left;
         double y = event.getMouseY() - current.top;
-        if (y >= 0 && y < 14 && x >= 0 && x < 17) { current.state.cycleVariant(-1); ViewerButton.playClick(); event.setCanceled(true); }
-        if (y >= 0 && y < 14 && x >= 41 && x < 58) { current.state.cycleVariant(1); ViewerButton.playClick(); event.setCanceled(true); }
-        if (y >= 0 && y < 14 && x >= 62 && x < 79) { current.state.cycleLayer(-1); ViewerButton.playClick(); event.setCanceled(true); }
-        if (y >= 0 && y < 14 && x >= 103 && x < 120) { current.state.cycleLayer(1); ViewerButton.playClick(); event.setCanceled(true); }
+        if (y >= 0 && y < 13 && x >= 2 && x < 15) { current.state.cycleVariant(-1); ViewerButton.playClick(); event.setCanceled(true); }
+        if (y >= 0 && y < 13 && x >= 40 && x < 53) { current.state.cycleVariant(1); ViewerButton.playClick(); event.setCanceled(true); }
+        if (y >= 0 && y < 13 && x >= 56 && x < 69) { current.state.cycleLayer(-1); ViewerButton.playClick(); event.setCanceled(true); }
+        if (y >= 0 && y < 13 && x >= 92 && x < 105) { current.state.cycleLayer(1); ViewerButton.playClick(); event.setCanceled(true); }
+        if (y >= 0 && y < 13 && x >= 107 && x < 120) { EmiApi.displayRecipeCategory(UniversalMultiblockViewerEmiPlugin.CATEGORY); ViewerButton.playClick(); event.setCanceled(true); }
     }
     static void tooltip(ScreenEvent.Render.Post event) {
         Active current = active;
         if (current == null || current.screen != Minecraft.getInstance().screen) return;
         double x = event.getMouseX() - current.left;
         double y = event.getMouseY() - current.top;
-        if (y < 0 || y >= 14) return;
-        String text = x >= 0 && x < 17 ? "Previous version"
-            : x >= 41 && x < 58 ? "Next version"
-            : x >= 62 && x < 79 ? "Previous layer"
-            : x >= 103 && x < 120 ? "Next layer" : null;
+        if (y < 0 || y >= 13) return;
+        String text = x >= 2 && x < 15 ? "Previous version"
+            : x >= 40 && x < 53 ? "Next version"
+            : x >= 56 && x < 69 ? "Previous layer"
+            : x >= 92 && x < 105 ? "Next layer"
+            : x >= 107 && x < 120 ? "Show All Multiblock Guides" : null;
         if (text != null) event.getGuiGraphics().renderTooltip(Minecraft.getInstance().font,
             net.minecraft.network.chat.Component.literal(text), event.getMouseX(), event.getMouseY());
     }

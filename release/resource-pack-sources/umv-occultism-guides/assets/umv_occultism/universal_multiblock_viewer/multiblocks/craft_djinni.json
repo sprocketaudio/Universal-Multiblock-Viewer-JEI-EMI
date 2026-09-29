@@ -1,0 +1,121 @@
+{
+  "format": 1,
+  "id": "umv_occultism:craft_djinni",
+  "title": "Strigeor's Higher Binding",
+  "description": "Bind a Djinni into an object for permanent spirit infusions.",
+  "provenance": {
+    "source_mod": "occultism",
+    "tested_version": "1.224.4",
+    "notes": "Verified against Occultism 1.224.4 ritual data."
+  },
+  "lookups": {
+    "U": [
+      "occultism:golden_sacrificial_bowl"
+    ]
+  },
+  "default_variant": "ritual_layout",
+  "variants": [
+    {
+      "id": "ritual_layout",
+      "title": "Ritual layout",
+      "palette": {
+        "0": {
+          "label": "Central sacrificial bowl",
+          "any_of": [
+            {
+              "block": "occultism:golden_sacrificial_bowl"
+            },
+            {
+              "tag": "occultism:center_sacrificial_bowl"
+            }
+          ],
+          "default": "occultism:golden_sacrificial_bowl"
+        },
+        "1": {
+          "label": "Accepted candle",
+          "any_of": [
+            {
+              "block": "minecraft:candle"
+            },
+            {
+              "tag": "minecraft:candles"
+            }
+          ],
+          "default": "minecraft:candle"
+        },
+        "2": {
+          "block": "minecraft:skeleton_skull"
+        },
+        "L": {
+          "label": "Accepted glyphs lime",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_lime",
+              "material": { "item": "occultism:chalk_lime", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:glyphs_lime"
+            }
+          ],
+          "default": "occultism:chalk_glyph_lime"
+        },
+        "S": {
+          "label": "Accepted foundation glyphs no white",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_light_gray",
+              "material": { "item": "occultism:chalk_light_gray", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:foundation_glyphs_no_white"
+            }
+          ],
+          "default": "occultism:chalk_glyph_light_gray"
+        },
+        "W": {
+          "label": "Accepted foundation glyphs any",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_white",
+              "material": { "item": "occultism:chalk_white", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:foundation_glyphs_any"
+            }
+          ],
+          "default": "occultism:chalk_glyph_white"
+        },
+        "X": {
+          "label": "Accepted glyphs purple",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_purple",
+              "material": { "item": "occultism:chalk_purple", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:glyphs_purple"
+            }
+          ],
+          "default": "occultism:chalk_glyph_purple"
+        }
+      },
+      "layers": [
+        [
+          "             ",
+          "  XLXLXLXLX  ",
+          " XL 2   2 LX ",
+          " L  WXXXW  L ",
+          " X2WS1 1SW2X ",
+          " L X1S S1X L ",
+          " X X  0  X X ",
+          " L X1S S1X L ",
+          " X2WS1 1SW2X ",
+          " L  WXXXW  L ",
+          " XL 2   2 LX ",
+          "  XLXLXLXLX  ",
+          "             "
+        ]
+      ]
+    }
+  ]
+}

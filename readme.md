@@ -2,67 +2,51 @@
 
 **Interactive 3D building guides for Minecraft multiblocks, powered by JSON.**
 
-Ever wanted to see how to build a multiblock, only to discover that the mod doesn't provide a visual guide?
+Universal Multiblock Viewer lets players explore multiblock structures directly in JEI and EMI. Rotate, pan, zoom, inspect layers, check materials, and see valid block alternatives without leaving the recipe viewer.
 
-Universal Multiblock Viewer lets players explore multiblock structures directly in JEI and EMI. Modpack creators can provide interactive construction guides for almost any mod using simple JSON definitions.
+## Companion Guide Packs
 
-## ⚠️ Important: What This Mod Does
+Ready-made multiblock guides are available as separate optional resource packs:
 
-**Universal Multiblock Viewer is a visual guide, NOT a mod that adds functional multiblock machines.**
+- [Forbidden Arcanus Guides](https://www.curseforge.com/minecraft/texture-packs/universal-multiblock-viewer-forbidden-arcanus)
+- [Neo Vitae and Blood Magic Guides](https://www.curseforge.com/minecraft/texture-packs/universal-multiblock-viewer-neo-vitae-blood-magic)
+- [Occultism Guides](https://www.curseforge.com/minecraft/texture-packs/universal-multiblock-viewer-occultism)
 
-It displays structures from existing mods, helping players understand how to build them. It does not form machines, change recipes or interfere with the original mods' mechanics.
+Install the pack for a supported mod alongside Universal Multiblock Viewer to add its guides. More guide packs can be added independently without updating the mod itself.
 
-**JSON definitions are currently required.** The viewer does not automatically discover every multiblock in your modpack.
+## What This Mod Does
 
-The Celestial Orrery shown in the screenshots is a fictional example structure created to demonstrate the viewer's features. It is not a functional machine added to Minecraft.
+Universal Multiblock Viewer is a visual guide, not a mod that adds functional multiblock machines. It displays structures from existing mods to help players build them correctly. It does not form machines, change recipes, or interfere with the original mod's mechanics.
+
+Guides are supplied through JSON definitions. Installing Universal Multiblock Viewer alone does not automatically add guides for every multiblock in a modpack.
+
+The Celestial Orrery shown in screenshots is a fictional example structure created to demonstrate the viewer. It is not a functional machine added to Minecraft.
 
 ## Features
 
-* **Interactive 3D models:** Rotate, pan and zoom to inspect structures from any angle.
-* **Layer-by-layer viewing:** Examine individual layers or display the complete structure.
-* **Block alternatives:** Select individual blocks to see every valid alternative for that position.
-* **Materials list:** View required blocks and quantities, with clickable recipe lookups.
-* **Multiple variants:** Explore different configurations, sizes and tiers of a multiblock.
-* **Customisable viewer:** Switch between dark and light backgrounds, reset the camera and collapse the animated help panel.
-* **JEI and EMI integration:** Find construction guides directly through your existing recipe viewer.
+- **Interactive 3D preview:** Rotate, pan, zoom, reset the view, change the background, and optionally show a floor grid.
+- **Layer and variant controls:** Examine individual layers, the whole structure, and alternative configurations or tiers.
+- **Clear block information:** Click a block to inspect its accepted alternatives, including tag-expanded choices.
+- **Materials palette:** See required materials and quantities, optional blocks, and reusable tools. Click item icons to open their normal JEI or EMI recipe lookups.
+- **Preview highlights:** Hover a material to highlight every matching visible position in the 3D preview.
+- **Guide discovery:** Open guides through configured `U` and `R` lookups, use tooltip hints on linked items, or browse the in-game guide list.
+- **JEI and EMI support:** Works with JEI, EMI, or both installed.
 
-## Creating and Installing Multiblock Guides
+## Creating and Installing Guides
 
-Currently, multiblock guides must be supplied through JSON definitions created by users or modpack creators.
+Guides are JSON files created by modpack authors and guide creators. No custom Java code or animated tutorials are required.
 
-Definitions can be installed in two ways:
+Install definitions in either location:
 
-* **Resource packs:** Install or share JSON definitions as a standard Minecraft resource pack.
-* **KubeJS:** Include definitions directly in your modpack's `kubejs/assets/` folder.
+- **Resource pack:** `assets/your_namespace/universal_multiblock_viewer/multiblocks/your_structure.json`
+- **KubeJS:** `kubejs/assets/your_namespace/universal_multiblock_viewer/multiblocks/your_structure.json`
 
-For example, using KubeJS:
+Definitions are client-side resources. Every player who should see a guide needs the resource pack or KubeJS assets installed on their own client. They are not automatically sent by a server.
 
-`kubejs/assets/your_namespace/universal_multiblock_viewer/multiblocks/your_structure.json`
-
-Or using a standard resource pack:
-
-`assets/your_namespace/universal_multiblock_viewer/multiblocks/your_structure.json`
-
-No custom Java code or animated tutorials are required.
-
-See [JSON Authoring](JSON%20Authoring.md) for the complete definition format and lookup rules.
-
-**Important:** Definitions are client-side resources. They must be installed on every client that needs to view them; they are not automatically synced from the server.
-
-**Installing Universal Multiblock Viewer alone will not automatically add guides for every multiblock in your game.**
+See the [JSON Authoring Guide](JSON%20Authoring.md) for the complete format, examples, lookup rules, optional blocks, block states, material mappings, and reusable tools.
 
 ## Future Plans
 
-This is just the beginning! Planned and potential additions include:
-
-* **Bundled multiblock guides:** Include definitions for common multiblocks, particularly those belonging to mods that don't already provide visual construction guides.
-* **Native mod integration:** Allow mod developers to bundle JSON definitions directly inside their own mod JARs, providing interactive construction guides without writing their own viewer.
-* **Automatic detection:** Explore ways to read existing structure definitions directly from compatible mods, reducing the need for separate JSON files.
-* **In-game structure capture:** Potentially allow players and pack creators to build a structure, select it in-game and automatically generate a viewer definition.
-* **Additional creator tools:** More quality-of-life features to simplify creating, editing and maintaining multiblock guides.
-
-These are future goals, not features of the current release. Automatic detection may not be possible for every mod.
-
-***
+Potential future additions include more companion guide packs, easier creator tools, in-game structure capture, and compatibility with additional structure-definition formats where practical.
 
 **Minecraft 1.21.1 | NeoForge | JEI / EMI**

@@ -3,6 +3,7 @@ package net.sprocketgames.universalmultiblockviewer.viewer;
 import java.util.Objects;
 import java.util.HashMap;
 import java.util.Map;
+import net.minecraft.resources.ResourceLocation;
 import net.sprocketgames.universalmultiblockviewer.model.BlockOption;
 import net.sprocketgames.universalmultiblockviewer.model.BlockRequirement;
 import net.sprocketgames.universalmultiblockviewer.model.GridPos;
@@ -12,7 +13,7 @@ import net.sprocketgames.universalmultiblockviewer.model.StructureVariant;
 /** Host-neutral camera, variant, layer, and selection state shared by JEI and EMI implementations. */
 public final class ViewerState {
     public static final double MIN_ZOOM = 0.45D;
-    public static final double MAX_ZOOM = 2.5D;
+    public static final double MAX_ZOOM = 6.0D;
     public static final int MATERIALS_VISIBLE = 12;
     public static final int EXPANDED_HELP_WIDTH = 78;
     public static final int COLLAPSED_HELP_WIDTH = 18;
@@ -32,6 +33,8 @@ public final class ViewerState {
     private boolean showFloorGrid;
     private boolean showAlternativeHighlights;
     private boolean showOptionalBlocks;
+    /** The presentation item currently under the material-strip pointer, if any. */
+    private ResourceLocation hoveredMaterial;
     private int materialOffset;
     private double materialScroll;
     private double materialTargetScroll;
@@ -68,6 +71,7 @@ public final class ViewerState {
     public boolean showFloorGrid() { return showFloorGrid; }
     public boolean showAlternativeHighlights() { return showAlternativeHighlights; }
     public boolean showOptionalBlocks() { return showOptionalBlocks; }
+    public ResourceLocation hoveredMaterial() { return hoveredMaterial; }
     public boolean hasOptionalBlocks() { return variant().cells().values().stream().anyMatch(BlockRequirement::optional); }
     public int materialOffset() { return materialOffset; }
     public double materialScroll() { return materialScroll; }
@@ -155,6 +159,12 @@ public final class ViewerState {
 
     public void clearSelection() { selected = null; }
 
+    /**
+     * Stores only transient UI hover state. It deliberately does not alter the chosen
+     * alternative, material totals, or camera, so both recipe-viewer hosts can share it.
+     */
+    public void setHoveredMaterial(ResourceLocation material) { hoveredMaterial = material; }
+
     public BlockRequirement selectedRequirement() {
         return selected == null ? null : variant().cells().get(selected);
     }
@@ -193,14 +203,22 @@ public final class ViewerState {
     public void scrollAlternativesSmooth(double delta, int visibleChoices) {
         BlockRequirement requirement = selectedRequirement();
         if (requirement == null) return;
-        int maximum = Math.max(0, requirement.options().size() - visibleChoices);
+        scrollAlternativesSmooth(delta, visibleChoices, requirement.options().size());
+    }
+
+    public void scrollAlternativesSmooth(double delta, int visibleChoices, int choiceCount) {
+        int maximum = Math.max(0, choiceCount - visibleChoices);
         alternativeTargetScroll = Math.clamp(alternativeTargetScroll + Math.clamp(delta, -1.0D, 1.0D), 0.0D, maximum);
     }
 
     public void setAlternativeTargetOffset(double offset, int visibleChoices) {
         BlockRequirement requirement = selectedRequirement();
         if (requirement == null) return;
-        alternativeTargetScroll = Math.clamp(offset, 0.0D, Math.max(0, requirement.options().size() - visibleChoices));
+        setAlternativeTargetOffset(offset, visibleChoices, requirement.options().size());
+    }
+
+    public void setAlternativeTargetOffset(double offset, int visibleChoices, int choiceCount) {
+        alternativeTargetScroll = Math.clamp(offset, 0.0D, Math.max(0, choiceCount - visibleChoices));
     }
 
     public void animateAlternativeScroll() {

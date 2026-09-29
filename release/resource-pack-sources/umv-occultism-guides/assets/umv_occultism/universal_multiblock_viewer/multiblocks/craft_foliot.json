@@ -1,0 +1,88 @@
+{
+  "format": 1,
+  "id": "umv_occultism:craft_foliot",
+  "title": "Eziveus' Spectral Compulsion",
+  "description": "Bind a Foliot into an object for basic permanent spirit infusions.",
+  "provenance": {
+    "source_mod": "occultism",
+    "tested_version": "1.224.4",
+    "notes": "Verified against Occultism 1.224.4 ritual data."
+  },
+  "lookups": {
+    "U": [
+      "occultism:golden_sacrificial_bowl"
+    ]
+  },
+  "default_variant": "ritual_layout",
+  "variants": [
+    {
+      "id": "ritual_layout",
+      "title": "Ritual layout",
+      "palette": {
+        "0": {
+          "label": "Central sacrificial bowl",
+          "any_of": [
+            {
+              "block": "occultism:golden_sacrificial_bowl"
+            },
+            {
+              "tag": "occultism:center_sacrificial_bowl"
+            }
+          ],
+          "default": "occultism:golden_sacrificial_bowl"
+        },
+        "1": {
+          "label": "Accepted candle",
+          "any_of": [
+            {
+              "block": "minecraft:candle"
+            },
+            {
+              "tag": "minecraft:candles"
+            }
+          ],
+          "default": "minecraft:candle"
+        },
+        "W": {
+          "label": "Accepted foundation glyphs any",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_white",
+              "material": { "item": "occultism:chalk_white", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:foundation_glyphs_any"
+            }
+          ],
+          "default": "occultism:chalk_glyph_white"
+        },
+        "X": {
+          "label": "Accepted glyphs purple",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_purple",
+              "material": { "item": "occultism:chalk_purple", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:glyphs_purple"
+            }
+          ],
+          "default": "occultism:chalk_glyph_purple"
+        }
+      },
+      "layers": [
+        [
+          "         ",
+          "  WXXXW  ",
+          " WW1 1WW ",
+          " X1W W1X ",
+          " X  0  X ",
+          " X1W W1X ",
+          " WW1 1WW ",
+          "  WXXXW  ",
+          "         "
+        ]
+      ]
+    }
+  ]
+}

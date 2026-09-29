@@ -1,0 +1,128 @@
+{
+  "format": 1,
+  "id": "umv_neovitae:ritual_standard_dungeon",
+  "title": "Highway to Hell",
+  "description": "Open a permanent gateway to an Endless-tier dungeon. Place a Master Ritual Stone at the centre and arrange the Ritual Stones as shown.",
+  "provenance": {
+    "source_mod": "neovitae",
+    "tested_version": "1.1.29",
+    "notes": "Verified against NeoVitae 1.1.29 ritual data."
+  },
+  "lookups": {
+    "U": [
+      "neovitae:master_ritual_stone"
+    ]
+  },
+  "default_variant": "base",
+  "variants": [
+    {
+      "id": "base",
+      "title": "Construction pattern",
+      "palette": {
+        "M": {
+          "block": "neovitae:master_ritual_stone",
+          "label": "Master Ritual Stone (ritual centre)"
+        },
+        "A": {
+          "block": "neovitae:air_ritual_stone",
+          "label": "Air Ritual Stone"
+        },
+        "E": {
+          "block": "neovitae:earth_ritual_stone",
+          "label": "Earth Ritual Stone"
+        },
+        "F": {
+          "block": "neovitae:fire_ritual_stone",
+          "label": "Fire Ritual Stone"
+        },
+        "W": {
+          "block": "neovitae:water_ritual_stone",
+          "label": "Water Ritual Stone"
+        },
+        "T": {
+          "block": "neovitae:tenebrae_ritual_stone",
+          "label": "Tenebrae Ritual Stone"
+        }
+      },
+      "layers": [
+        [
+          " TT      ",
+          "TT   EEE ",
+          "T FF   E ",
+          "  F WT E ",
+          "   FMW   ",
+          " A TF W  ",
+          " A   WW T",
+          " AAA   TT",
+          "      TT "
+        ],
+        [
+          "         ",
+          "         ",
+          "         ",
+          "         ",
+          "         ",
+          "         ",
+          "         ",
+          "         ",
+          "         "
+        ],
+        [
+          "         ",
+          "         ",
+          "         ",
+          "         ",
+          "    E    ",
+          "         ",
+          "         ",
+          "         ",
+          "         "
+        ],
+        [
+          "         ",
+          "         ",
+          "         ",
+          "         ",
+          "    T    ",
+          "         ",
+          "         ",
+          "         ",
+          "         "
+        ],
+        [
+          "  TAAAT  ",
+          " ET   TE ",
+          "TT     TT",
+          "A       A",
+          "A   T   A",
+          "A       A",
+          "TT     TT",
+          " ET   TE ",
+          "  TAAAT  "
+        ],
+        [
+          "         ",
+          "         ",
+          "         ",
+          "         ",
+          "    T    ",
+          "         ",
+          "         ",
+          "         ",
+          "         "
+        ],
+        [
+          "         ",
+          "         ",
+          "         ",
+          "         ",
+          "    A    ",
+          "         ",
+          "         ",
+          "         ",
+          "         "
+        ]
+      ]
+    }
+  ]
+}

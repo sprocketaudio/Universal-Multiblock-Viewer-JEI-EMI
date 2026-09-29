@@ -1,0 +1,88 @@
+{
+  "format": 1,
+  "id": "umv_occultism:possess_foliot",
+  "title": "Hedyrin's Lure",
+  "description": "Force a Foliot to possess a nearby creature for basic possessions and familiars.",
+  "provenance": {
+    "source_mod": "occultism",
+    "tested_version": "1.224.4",
+    "notes": "Verified against Occultism 1.224.4 ritual data."
+  },
+  "lookups": {
+    "U": [
+      "occultism:golden_sacrificial_bowl"
+    ]
+  },
+  "default_variant": "ritual_layout",
+  "variants": [
+    {
+      "id": "ritual_layout",
+      "title": "Ritual layout",
+      "palette": {
+        "0": {
+          "label": "Central sacrificial bowl",
+          "any_of": [
+            {
+              "block": "occultism:golden_sacrificial_bowl"
+            },
+            {
+              "tag": "occultism:center_sacrificial_bowl"
+            }
+          ],
+          "default": "occultism:golden_sacrificial_bowl"
+        },
+        "1": {
+          "label": "Accepted candle",
+          "any_of": [
+            {
+              "block": "minecraft:candle"
+            },
+            {
+              "tag": "minecraft:candles"
+            }
+          ],
+          "default": "minecraft:candle"
+        },
+        "W": {
+          "label": "Accepted foundation glyphs any",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_white",
+              "material": { "item": "occultism:chalk_white", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:foundation_glyphs_any"
+            }
+          ],
+          "default": "occultism:chalk_glyph_white"
+        },
+        "Y": {
+          "label": "Accepted glyphs yellow",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_gold",
+              "material": { "item": "occultism:chalk_gold", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:glyphs_yellow"
+            }
+          ],
+          "default": "occultism:chalk_glyph_gold"
+        }
+      },
+      "layers": [
+        [
+          "         ",
+          "    W    ",
+          "   W1W   ",
+          "  W Y W  ",
+          " W1Y0Y1W ",
+          "  W Y W  ",
+          "   W1W   ",
+          "    W    ",
+          "         "
+        ]
+      ]
+    }
+  ]
+}

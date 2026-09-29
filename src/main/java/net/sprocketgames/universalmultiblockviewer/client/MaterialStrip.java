@@ -3,6 +3,7 @@ package net.sprocketgames.universalmultiblockviewer.client;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.resources.ResourceLocation;
 import net.sprocketgames.universalmultiblockviewer.model.MaterialEntry;
 import net.sprocketgames.universalmultiblockviewer.model.MultiblockMaterials;
 import net.sprocketgames.universalmultiblockviewer.viewer.ViewerIngredientResolver;
@@ -14,11 +15,13 @@ public final class MaterialStrip {
     public static final int Y = 138;
     public static final int WIDTH = 248;
     public static final int HEIGHT = 28;
-    public static final int FIRST_ITEM = X + 4;
+    /** A two-pixel inset leaves room for the primary-material frame at the left edge. */
+    public static final int FIRST_ITEM = X + 6;
     public static final int VISIBLE = ViewerState.MATERIALS_VISIBLE;
     /** Twelve full cells plus the largest safe glimpse of the next one. */
     public static final int ITEM_VIEWPORT_RIGHT = X + WIDTH - 4;
     private static final float COUNT_SCALE = 0.75F;
+    public static final int PRIMARY_OUTLINE = 0xFF63B06A;
 
     private MaterialStrip() { }
 
@@ -33,7 +36,8 @@ public final class MaterialStrip {
         var pose = graphics.pose().last().pose();
         int screenLeft = Math.round(pose.m30()) + left;
         int screenTop = Math.round(pose.m31()) + top;
-        graphics.enableScissor(screenLeft + FIRST_ITEM, screenTop + Y, screenLeft + ITEM_VIEWPORT_RIGHT, screenTop + Y + 22);
+        // Include the padded left edge so the primary-material frame is never clipped.
+        graphics.enableScissor(screenLeft + X + 1, screenTop + Y, screenLeft + ITEM_VIEWPORT_RIGHT, screenTop + Y + 22);
         try {
             int first = state.materialOffset();
             double fractional = state.materialScroll() - first;
@@ -59,10 +63,13 @@ public final class MaterialStrip {
                 MaterialEntry material = materials.get(index + first);
                 int x = left + FIRST_ITEM + index * 19 - (int) Math.round(fractional * 19.0D);
                 int y = top + Y + 3;
-                if (!material.requirement().optional()) {
+                if (isPrimaryMaterial(state, material)) {
+                    graphics.fill(x - 2, y - 2, x + 18, y + 18, PRIMARY_OUTLINE);
+                    graphics.fill(x - 1, y - 1, x + 17, y + 17, 0xFF262522);
+                } else if (!material.requirement().optional()) {
                     graphics.fill(x - 1, y - 1, x + 17, y + 17, 0xFF716B60);
                 }
-                ViewerItemIconRenderer.render(graphics, ViewerIngredientResolver.stackFor(material.requirement().defaultBlock()), x, y);
+                ViewerItemIconRenderer.render(graphics, ViewerIngredientResolver.materialStackFor(material.requirement().defaultBlock()), x, y);
                 String count = Integer.toString(material.count());
                 graphics.pose().pushPose();
                 try {
@@ -95,6 +102,18 @@ public final class MaterialStrip {
         return index >= 0 && index < materials.size() ? materials.get(index) : null;
     }
 
+    /** Updates the shared viewport hover marker while leaving the host's ordinary item tooltip intact. */
+    public static void updateHoveredMaterial(ViewerState state, double x, double y) {
+        MaterialEntry material = at(state, x, y);
+        state.setHoveredMaterial(material == null ? null : presentationItem(material));
+    }
+
+    /** The item the strip presents for a material requirement, including configured block-to-item mappings. */
+    public static ResourceLocation presentationItem(MaterialEntry material) {
+        var presentation = material.requirement().defaultBlock().material();
+        return presentation.item() == null ? material.requirement().defaultBlock().id() : presentation.item();
+    }
+
     public static boolean click(ViewerState state, double x, double y) {
         if (y < Y + 21 || y >= Y + HEIGHT || x < X || x >= X + WIDTH) return false;
         int count = materials(state).size();
@@ -108,7 +127,7 @@ public final class MaterialStrip {
     }
 
     public static List<MaterialEntry> materials(ViewerState state) {
-        List<MaterialEntry> required = MultiblockMaterials.forVariant(state.variant());
+        List<MaterialEntry> required = primaryFirst(state, MultiblockMaterials.forVariant(state.variant()));
         if (!state.showOptionalBlocks()) return required;
         List<MaterialEntry> optional = MultiblockMaterials.optionalForVariant(state.variant());
         if (optional.isEmpty()) return required;
@@ -116,5 +135,29 @@ public final class MaterialStrip {
         combined.addAll(required);
         combined.addAll(optional);
         return List.copyOf(combined);
+    }
+
+    private static boolean isPrimaryMaterial(ViewerState state, MaterialEntry material) {
+        return primaryLookupItem(state).map(material.requirement().defaultBlock().id()::equals).orElse(false);
+    }
+
+    /** The first Uses association is the conventional controller/core; Recipes is the fallback. */
+    private static java.util.Optional<net.minecraft.resources.ResourceLocation> primaryLookupItem(ViewerState state) {
+        if (!state.definition().useLookupItems().isEmpty()) {
+            return java.util.Optional.of(state.definition().useLookupItems().getFirst());
+        }
+        if (!state.definition().recipeLookupItems().isEmpty()) {
+            return java.util.Optional.of(state.definition().recipeLookupItems().getFirst());
+        }
+        return java.util.Optional.empty();
+    }
+
+    /** Keeps normal alphabetical ordering, except that the guide's controller/core is always first. */
+    private static List<MaterialEntry> primaryFirst(ViewerState state, List<MaterialEntry> materials) {
+        var primary = primaryLookupItem(state);
+        if (primary.isEmpty()) return materials;
+        var ordered = new java.util.ArrayList<>(materials);
+        ordered.sort(java.util.Comparator.comparing(entry -> !entry.requirement().defaultBlock().id().equals(primary.get())));
+        return List.copyOf(ordered);
     }
 }

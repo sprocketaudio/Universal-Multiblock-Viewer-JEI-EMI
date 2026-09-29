@@ -26,7 +26,7 @@ final class EmiMaterialStripInputHandler {
         double y = event.getMouseY() - current.top + MaterialStrip.Y;
         if (MaterialStrip.click(current.state, x, y)) { event.setCanceled(true); return; }
         var material = MaterialStrip.at(current.state, x, y);
-        if (material != null) { EmiApi.displayRecipes(EmiStack.of(ViewerIngredientResolver.stackFor(material.requirement().defaultBlock()))); event.setCanceled(true); }
+        if (material != null) { EmiApi.displayRecipes(EmiStack.of(ViewerIngredientResolver.materialStackFor(material.requirement().defaultBlock()))); event.setCanceled(true); }
     }
     static void scroll(ScreenEvent.MouseScrolled.Pre event) {
         Active current = target(event.getMouseX(), event.getMouseY());
@@ -40,13 +40,17 @@ final class EmiMaterialStripInputHandler {
     }
     static void tooltip(ScreenEvent.Render.Post event) {
         Active current = target(event.getMouseX(), event.getMouseY());
-        if (current == null) return;
+        if (current == null) {
+            if (active != null && active.screen == Minecraft.getInstance().screen) active.state.setHoveredMaterial(null);
+            return;
+        }
         double x = event.getMouseX() - current.left + MaterialStrip.X;
         double y = event.getMouseY() - current.top + MaterialStrip.Y;
         var material = MaterialStrip.at(current.state, x, y);
+        MaterialStrip.updateHoveredMaterial(current.state, x, y);
         if (material != null) {
             event.getGuiGraphics().renderTooltip(Minecraft.getInstance().font,
-                ViewerIngredientResolver.stackFor(material.requirement().defaultBlock()), event.getMouseX(), event.getMouseY());
+                ViewerIngredientResolver.materialStackFor(material.requirement().defaultBlock()), event.getMouseX(), event.getMouseY());
         }
     }
     private static Active target(double mouseX, double mouseY) {

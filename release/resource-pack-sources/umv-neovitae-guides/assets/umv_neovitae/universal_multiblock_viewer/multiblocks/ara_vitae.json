@@ -1,0 +1,1002 @@
+{
+  "format": 1,
+  "id": "umv_neovitae:ara_vitae",
+  "title": "Ara Vitae",
+  "description": "Ara Vitae is the NeoVitae altar used for higher-tier rituals and upgrades. Build the selected tier and choose any valid altar rune from the alternatives list. Optional pillars are hidden by default.",
+  "provenance": {
+    "source_mod": "neovitae",
+    "tested_version": "1.1.29",
+    "notes": "Verified against NeoVitae 1.1.29 altar data."
+  },
+  "lookups": {
+    "U": [
+      "neovitae:ara_vitae"
+    ],
+    "R": [
+      "neovitae:ara_vitae"
+    ]
+  },
+  "default_variant": "weak",
+  "variants": [
+    {
+      "id": "weak",
+      "title": "Tier 0 - Weak",
+      "palette": {
+        "C": {
+          "block": "neovitae:ara_vitae",
+          "label": "Ara Vitae (altar core)"
+        }
+      },
+      "layers": [
+        [
+          "C"
+        ]
+      ]
+    },
+    {
+      "id": "apprentice",
+      "title": "Tier 1 - Apprentice",
+      "palette": {
+        "C": {
+          "block": "neovitae:ara_vitae",
+          "label": "Ara Vitae (altar core)"
+        },
+        "R": {
+          "label": "Rune slot - any accepted altar rune",
+          "any_of": [
+            {
+              "block": "neovitae:rune_blank"
+            },
+            {
+              "tag": "neovitae:altar/runes"
+            }
+          ],
+          "default": "neovitae:rune_blank"
+        },
+        "D": {
+          "label": "Tier 1 diagonal rune (not upgradeable at this tier)",
+          "any_of": [
+            {
+              "block": "neovitae:rune_blank"
+            },
+            {
+              "tag": "neovitae:altar/runes"
+            }
+          ],
+          "default": "neovitae:rune_blank"
+        }
+      },
+      "layers": [
+        [
+          "DRD",
+          "R R",
+          "DRD"
+        ],
+        [
+          "   ",
+          " C ",
+          "   "
+        ]
+      ]
+    },
+    {
+      "id": "mage",
+      "title": "Tier 2 - Mage",
+      "palette": {
+        "C": {
+          "block": "neovitae:ara_vitae",
+          "label": "Ara Vitae (altar core)"
+        },
+        "R": {
+          "label": "Rune slot - any accepted altar rune",
+          "any_of": [
+            {
+              "block": "neovitae:rune_blank"
+            },
+            {
+              "tag": "neovitae:altar/runes"
+            }
+          ],
+          "default": "neovitae:rune_blank"
+        },
+        "G": {
+          "label": "Tier 2 blood-glass capstone",
+          "any_of": [
+            {
+              "block": "neovitae:blood_stained_glass"
+            },
+            {
+              "tag": "neovitae:altar/t3_capstones"
+            }
+          ],
+          "default": "neovitae:blood_stained_glass"
+        },
+        "P": {
+          "label": "Optional support pillar - solid-block examples, not exhaustive",
+          "optional": true,
+          "any_of": [
+            {
+              "block": "minecraft:stone_bricks"
+            },
+            {
+              "block": "minecraft:stone"
+            },
+            {
+              "block": "minecraft:cobblestone"
+            },
+            {
+              "block": "minecraft:deepslate_bricks"
+            },
+            {
+              "block": "minecraft:polished_blackstone_bricks"
+            }
+          ],
+          "default": "minecraft:stone_bricks"
+        }
+      },
+      "layers": [
+        [
+          "         ",
+          "   RRR   ",
+          "  R   R  ",
+          " R     R ",
+          " R     R ",
+          " R     R ",
+          "  R   R  ",
+          "   RRR   ",
+          "         "
+        ],
+        [
+          "    P    ",
+          "         ",
+          "         ",
+          "   RRR   ",
+          "P  R R  P",
+          "   RRR   ",
+          "         ",
+          "         ",
+          "    P    "
+        ],
+        [
+          "    P    ",
+          "         ",
+          "         ",
+          "         ",
+          "P   C   P",
+          "         ",
+          "         ",
+          "         ",
+          "    P    "
+        ],
+        [
+          "    G    ",
+          "         ",
+          "         ",
+          "         ",
+          "G       G",
+          "         ",
+          "         ",
+          "         ",
+          "    G    "
+        ]
+      ]
+    },
+    {
+      "id": "master",
+      "title": "Tier 3 - Master",
+      "palette": {
+        "C": {
+          "block": "neovitae:ara_vitae",
+          "label": "Ara Vitae (altar core)"
+        },
+        "R": {
+          "label": "Rune slot - any accepted altar rune",
+          "any_of": [
+            {
+              "block": "neovitae:rune_blank"
+            },
+            {
+              "tag": "neovitae:altar/runes"
+            }
+          ],
+          "default": "neovitae:rune_blank"
+        },
+        "G": {
+          "label": "Tier 2 blood-glass capstone",
+          "any_of": [
+            {
+              "block": "neovitae:blood_stained_glass"
+            },
+            {
+              "tag": "neovitae:altar/t3_capstones"
+            }
+          ],
+          "default": "neovitae:blood_stained_glass"
+        },
+        "B": {
+          "label": "Tier 3 bloodstone capstone",
+          "any_of": [
+            {
+              "block": "neovitae:bloodstone_brick"
+            },
+            {
+              "tag": "neovitae:altar/t4_capstones"
+            }
+          ],
+          "default": "neovitae:bloodstone_brick"
+        },
+        "P": {
+          "label": "Optional support pillar - solid-block examples, not exhaustive",
+          "optional": true,
+          "any_of": [
+            {
+              "block": "minecraft:stone_bricks"
+            },
+            {
+              "block": "minecraft:stone"
+            },
+            {
+              "block": "minecraft:cobblestone"
+            },
+            {
+              "block": "minecraft:deepslate_bricks"
+            },
+            {
+              "block": "minecraft:polished_blackstone_bricks"
+            }
+          ],
+          "default": "minecraft:stone_bricks"
+        },
+        "Q": {
+          "label": "Optional decorative supports below outer bloodstone capstones (not in NeoVitae validation pattern)",
+          "optional": true,
+          "any_of": [
+            {
+              "block": "minecraft:stone_bricks"
+            },
+            {
+              "block": "minecraft:stone"
+            },
+            {
+              "block": "minecraft:cobblestone"
+            },
+            {
+              "block": "minecraft:deepslate_bricks"
+            },
+            {
+              "block": "minecraft:polished_blackstone_bricks"
+            }
+          ],
+          "default": "minecraft:stone_bricks"
+        }
+      },
+      "layers": [
+        [
+          "Q           Q",
+          "    RRRRR    ",
+          "   R     R   ",
+          "  R       R  ",
+          " R         R ",
+          " R         R ",
+          " R         R ",
+          " R         R ",
+          " R         R ",
+          "  R       R  ",
+          "   R     R   ",
+          "    RRRRR    ",
+          "Q           Q"
+        ],
+        [
+          "Q           Q",
+          "             ",
+          "             ",
+          "     RRR     ",
+          "    R   R    ",
+          "   R     R   ",
+          "   R     R   ",
+          "   R     R   ",
+          "    R   R    ",
+          "     RRR     ",
+          "             ",
+          "             ",
+          "Q           Q"
+        ],
+        [
+          "Q           Q",
+          "             ",
+          "      P      ",
+          "             ",
+          "             ",
+          "     RRR     ",
+          "  P  R R  P  ",
+          "     RRR     ",
+          "             ",
+          "             ",
+          "      P      ",
+          "             ",
+          "Q           Q"
+        ],
+        [
+          "Q           Q",
+          "             ",
+          "      P      ",
+          "             ",
+          "             ",
+          "             ",
+          "  P   C   P  ",
+          "             ",
+          "             ",
+          "             ",
+          "      P      ",
+          "             ",
+          "Q           Q"
+        ],
+        [
+          "Q           Q",
+          "             ",
+          "      G      ",
+          "             ",
+          "             ",
+          "             ",
+          "  G       G  ",
+          "             ",
+          "             ",
+          "             ",
+          "      G      ",
+          "             ",
+          "Q           Q"
+        ],
+        [
+          "B           B",
+          "             ",
+          "             ",
+          "             ",
+          "             ",
+          "             ",
+          "             ",
+          "             ",
+          "             ",
+          "             ",
+          "             ",
+          "             ",
+          "B           B"
+        ]
+      ]
+    },
+    {
+      "id": "archmage",
+      "title": "Tier 4 - Archmage",
+      "palette": {
+        "C": {
+          "block": "neovitae:ara_vitae",
+          "label": "Ara Vitae (altar core)"
+        },
+        "R": {
+          "label": "Rune slot - any accepted altar rune",
+          "any_of": [
+            {
+              "block": "neovitae:rune_blank"
+            },
+            {
+              "tag": "neovitae:altar/runes"
+            }
+          ],
+          "default": "neovitae:rune_blank"
+        },
+        "G": {
+          "label": "Tier 2 blood-glass capstone",
+          "any_of": [
+            {
+              "block": "neovitae:blood_stained_glass"
+            },
+            {
+              "tag": "neovitae:altar/t3_capstones"
+            }
+          ],
+          "default": "neovitae:blood_stained_glass"
+        },
+        "B": {
+          "label": "Tier 3 bloodstone capstone",
+          "any_of": [
+            {
+              "block": "neovitae:bloodstone_brick"
+            },
+            {
+              "tag": "neovitae:altar/t4_capstones"
+            }
+          ],
+          "default": "neovitae:bloodstone_brick"
+        },
+        "H": {
+          "label": "Tier 4 hellforged capstone",
+          "any_of": [
+            {
+              "block": "neovitae:hellforged_block"
+            },
+            {
+              "tag": "neovitae:altar/t5_capstones"
+            }
+          ],
+          "default": "neovitae:hellforged_block"
+        },
+        "P": {
+          "label": "Optional support pillar - solid-block examples, not exhaustive",
+          "optional": true,
+          "any_of": [
+            {
+              "block": "minecraft:stone_bricks"
+            },
+            {
+              "block": "minecraft:stone"
+            },
+            {
+              "block": "minecraft:cobblestone"
+            },
+            {
+              "block": "minecraft:deepslate_bricks"
+            },
+            {
+              "block": "minecraft:polished_blackstone_bricks"
+            }
+          ],
+          "default": "minecraft:stone_bricks"
+        },
+        "Q": {
+          "label": "Optional decorative supports below outer bloodstone capstones (not in NeoVitae validation pattern)",
+          "optional": true,
+          "any_of": [
+            {
+              "block": "minecraft:stone_bricks"
+            },
+            {
+              "block": "minecraft:stone"
+            },
+            {
+              "block": "minecraft:cobblestone"
+            },
+            {
+              "block": "minecraft:deepslate_bricks"
+            },
+            {
+              "block": "minecraft:polished_blackstone_bricks"
+            }
+          ],
+          "default": "minecraft:stone_bricks"
+        }
+      },
+      "layers": [
+        [
+          "         H         ",
+          "       RRRRR       ",
+          "     RR     RR     ",
+          "   RR         RR   ",
+          "   R           R   ",
+          "  R             R  ",
+          "  R             R  ",
+          " R               R ",
+          " R               R ",
+          "HR               RH",
+          " R               R ",
+          " R               R ",
+          "  R             R  ",
+          "  R             R  ",
+          "   R           R   ",
+          "   RR         RR   ",
+          "     RR     RR     ",
+          "       RRRRR       ",
+          "         H         "
+        ],
+        [
+          "                   ",
+          "                   ",
+          "                   ",
+          "   Q           Q   ",
+          "       RRRRR       ",
+          "      R     R      ",
+          "     R       R     ",
+          "    R         R    ",
+          "    R         R    ",
+          "    R         R    ",
+          "    R         R    ",
+          "    R         R    ",
+          "     R       R     ",
+          "      R     R      ",
+          "       RRRRR       ",
+          "   Q           Q   ",
+          "                   ",
+          "                   ",
+          "                   "
+        ],
+        [
+          "                   ",
+          "                   ",
+          "                   ",
+          "   Q           Q   ",
+          "                   ",
+          "                   ",
+          "        RRR        ",
+          "       R   R       ",
+          "      R     R      ",
+          "      R     R      ",
+          "      R     R      ",
+          "       R   R       ",
+          "        RRR        ",
+          "                   ",
+          "                   ",
+          "   Q           Q   ",
+          "                   ",
+          "                   ",
+          "                   "
+        ],
+        [
+          "                   ",
+          "                   ",
+          "                   ",
+          "   Q           Q   ",
+          "                   ",
+          "         P         ",
+          "                   ",
+          "                   ",
+          "        RRR        ",
+          "     P  R R  P     ",
+          "        RRR        ",
+          "                   ",
+          "                   ",
+          "         P         ",
+          "                   ",
+          "   Q           Q   ",
+          "                   ",
+          "                   ",
+          "                   "
+        ],
+        [
+          "                   ",
+          "                   ",
+          "                   ",
+          "   Q           Q   ",
+          "                   ",
+          "         P         ",
+          "                   ",
+          "                   ",
+          "                   ",
+          "     P   C   P     ",
+          "                   ",
+          "                   ",
+          "                   ",
+          "         P         ",
+          "                   ",
+          "   Q           Q   ",
+          "                   ",
+          "                   ",
+          "                   "
+        ],
+        [
+          "                   ",
+          "                   ",
+          "                   ",
+          "   Q           Q   ",
+          "                   ",
+          "         G         ",
+          "                   ",
+          "                   ",
+          "                   ",
+          "     G       G     ",
+          "                   ",
+          "                   ",
+          "                   ",
+          "         G         ",
+          "                   ",
+          "   Q           Q   ",
+          "                   ",
+          "                   ",
+          "                   "
+        ],
+        [
+          "                   ",
+          "                   ",
+          "                   ",
+          "   B           B   ",
+          "                   ",
+          "                   ",
+          "                   ",
+          "                   ",
+          "                   ",
+          "                   ",
+          "                   ",
+          "                   ",
+          "                   ",
+          "                   ",
+          "                   ",
+          "   B           B   ",
+          "                   ",
+          "                   ",
+          "                   "
+        ]
+      ]
+    },
+    {
+      "id": "transcendent",
+      "title": "Tier 5 - Transcendent",
+      "palette": {
+        "C": {
+          "block": "neovitae:ara_vitae",
+          "label": "Ara Vitae (altar core)"
+        },
+        "R": {
+          "label": "Rune slot - any accepted altar rune",
+          "any_of": [
+            {
+              "block": "neovitae:rune_blank"
+            },
+            {
+              "tag": "neovitae:altar/runes"
+            }
+          ],
+          "default": "neovitae:rune_blank"
+        },
+        "G": {
+          "label": "Tier 2 blood-glass capstone",
+          "any_of": [
+            {
+              "block": "neovitae:blood_stained_glass"
+            },
+            {
+              "tag": "neovitae:altar/t3_capstones"
+            }
+          ],
+          "default": "neovitae:blood_stained_glass"
+        },
+        "B": {
+          "label": "Tier 3 bloodstone capstone",
+          "any_of": [
+            {
+              "block": "neovitae:bloodstone_brick"
+            },
+            {
+              "tag": "neovitae:altar/t4_capstones"
+            }
+          ],
+          "default": "neovitae:bloodstone_brick"
+        },
+        "H": {
+          "label": "Tier 4 hellforged capstone",
+          "any_of": [
+            {
+              "block": "neovitae:hellforged_block"
+            },
+            {
+              "tag": "neovitae:altar/t5_capstones"
+            }
+          ],
+          "default": "neovitae:hellforged_block"
+        },
+        "X": {
+          "label": "Tier 5 crystal-cluster capstone",
+          "any_of": [
+            {
+              "block": "neovitae:crystal_cluster_brick"
+            },
+            {
+              "block": "neovitae:crystal_cluster"
+            },
+            {
+              "tag": "neovitae:altar/t6_capstones"
+            }
+          ],
+          "default": "neovitae:crystal_cluster_brick"
+        },
+        "P": {
+          "label": "Optional support pillar - solid-block examples, not exhaustive",
+          "optional": true,
+          "any_of": [
+            {
+              "block": "minecraft:stone_bricks"
+            },
+            {
+              "block": "minecraft:stone"
+            },
+            {
+              "block": "minecraft:cobblestone"
+            },
+            {
+              "block": "minecraft:deepslate_bricks"
+            },
+            {
+              "block": "minecraft:polished_blackstone_bricks"
+            }
+          ],
+          "default": "minecraft:stone_bricks"
+        },
+        "Q": {
+          "label": "Optional decorative supports below outer bloodstone capstones (not in NeoVitae validation pattern)",
+          "optional": true,
+          "any_of": [
+            {
+              "block": "minecraft:stone_bricks"
+            },
+            {
+              "block": "minecraft:stone"
+            },
+            {
+              "block": "minecraft:cobblestone"
+            },
+            {
+              "block": "minecraft:deepslate_bricks"
+            },
+            {
+              "block": "minecraft:polished_blackstone_bricks"
+            }
+          ],
+          "default": "minecraft:stone_bricks"
+        },
+        "S": {
+          "label": "Optional decorative supports below hellforged capstones (not in NeoVitae validation pattern)",
+          "optional": true,
+          "any_of": [
+            {
+              "block": "minecraft:stone_bricks"
+            },
+            {
+              "block": "minecraft:stone"
+            },
+            {
+              "block": "minecraft:cobblestone"
+            },
+            {
+              "block": "minecraft:deepslate_bricks"
+            },
+            {
+              "block": "minecraft:polished_blackstone_bricks"
+            }
+          ],
+          "default": "minecraft:stone_bricks"
+        }
+      },
+      "layers": [
+        [
+          "                         ",
+          "         RRRRRRR         ",
+          "       RR       RR       ",
+          "     RR     S     RR     ",
+          "    RR             RR    ",
+          "   RR               RR   ",
+          "   R                 R   ",
+          "  R                   R  ",
+          "  R                   R  ",
+          " R                     R ",
+          " R                     R ",
+          " R                     R ",
+          " R S                 S R ",
+          " R                     R ",
+          " R                     R ",
+          " R                     R ",
+          "  R                   R  ",
+          "  R                   R  ",
+          "   R                 R   ",
+          "   RR               RR   ",
+          "    RR             RR    ",
+          "     RR     S     RR     ",
+          "       RR       RR       ",
+          "         RRRRRRR         ",
+          "                         "
+        ],
+        [
+          "            P            ",
+          "                         ",
+          "                         ",
+          "            H            ",
+          "          RRRRR          ",
+          "        RR     RR        ",
+          "      RR         RR      ",
+          "      R           R      ",
+          "     R             R     ",
+          "     R             R     ",
+          "    R               R    ",
+          "    R               R    ",
+          "P  HR               RH  P",
+          "    R               R    ",
+          "    R               R    ",
+          "     R             R     ",
+          "     R             R     ",
+          "      R           R      ",
+          "      RR         RR      ",
+          "        RR     RR        ",
+          "          RRRRR          ",
+          "            H            ",
+          "                         ",
+          "                         ",
+          "            P            "
+        ],
+        [
+          "            P            ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "      Q           Q      ",
+          "          RRRRR          ",
+          "         R     R         ",
+          "        R       R        ",
+          "       R         R       ",
+          "       R         R       ",
+          "P      R         R      P",
+          "       R         R       ",
+          "       R         R       ",
+          "        R       R        ",
+          "         R     R         ",
+          "          RRRRR          ",
+          "      Q           Q      ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "            P            "
+        ],
+        [
+          "            P            ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "      Q           Q      ",
+          "                         ",
+          "                         ",
+          "           RRR           ",
+          "          R   R          ",
+          "         R     R         ",
+          "P        R     R        P",
+          "         R     R         ",
+          "          R   R          ",
+          "           RRR           ",
+          "                         ",
+          "                         ",
+          "      Q           Q      ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "            P            "
+        ],
+        [
+          "            P            ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "      Q           Q      ",
+          "                         ",
+          "            P            ",
+          "                         ",
+          "                         ",
+          "           RRR           ",
+          "P       P  R R  P       P",
+          "           RRR           ",
+          "                         ",
+          "                         ",
+          "            P            ",
+          "                         ",
+          "      Q           Q      ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "            P            "
+        ],
+        [
+          "            P            ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "      Q           Q      ",
+          "                         ",
+          "            P            ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "P       P   C   P       P",
+          "                         ",
+          "                         ",
+          "                         ",
+          "            P            ",
+          "                         ",
+          "      Q           Q      ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "            P            "
+        ],
+        [
+          "            P            ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "      Q           Q      ",
+          "                         ",
+          "            G            ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "P       G       G       P",
+          "                         ",
+          "                         ",
+          "                         ",
+          "            G            ",
+          "                         ",
+          "      Q           Q      ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "            P            "
+        ],
+        [
+          "            P            ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "      B           B      ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "P                       P",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "      B           B      ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "            P            "
+        ],
+        [
+          "            X            ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "X                       X",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "                         ",
+          "            X            "
+        ]
+      ]
+    }
+  ]
+}

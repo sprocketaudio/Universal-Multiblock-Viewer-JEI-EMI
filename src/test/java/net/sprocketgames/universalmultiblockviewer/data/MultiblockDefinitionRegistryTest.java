@@ -62,6 +62,28 @@ class MultiblockDefinitionRegistryTest {
             MultiblockDefinitionRegistry.forRecipeLookupItem(ResourceLocation.parse("minecraft:smithing_table")));
     }
 
+    @Test
+    void catalogueGroupsByResourceNamespaceAndFolderThenSortsTitles() {
+        MultiblockDefinition beta = definition("beta", "test:core");
+        MultiblockDefinition alpha = definition("alpha", "test:core");
+        MultiblockDefinition gamma = definition("gamma", "test:core");
+        MultiblockDefinition zeta = definition("zeta", "test:core");
+        Map<ResourceLocation, MultiblockDefinition> definitions = new LinkedHashMap<>();
+        definitions.put(beta.id(), beta);
+        definitions.put(alpha.id(), alpha);
+        definitions.put(gamma.id(), gamma);
+        definitions.put(zeta.id(), zeta);
+        Map<ResourceLocation, ResourceLocation> sources = Map.of(
+            beta.id(), ResourceLocation.parse("pack_a:universal_multiblock_viewer/multiblocks/machines/beta"),
+            alpha.id(), ResourceLocation.parse("pack_a:universal_multiblock_viewer/multiblocks/machines/alpha"),
+            gamma.id(), ResourceLocation.parse("pack_a:universal_multiblock_viewer/multiblocks/rituals/gamma"),
+            zeta.id(), ResourceLocation.parse("pack_b:universal_multiblock_viewer/multiblocks/machines/zeta")
+        );
+
+        assertEquals(List.of(alpha, beta, gamma, zeta),
+            List.copyOf(MultiblockDefinitionReloadListener.orderCatalogue(definitions, sources).values()));
+    }
+
     private static MultiblockDefinition definition(String id, String associatedItem) {
         return definition(id, List.of(associatedItem), List.of(associatedItem));
     }

@@ -1,0 +1,77 @@
+{
+  "format": 1,
+  "id": "umv_fa:hephaestus_forge",
+  "title": "Hephaestus Forge",
+  "description": "Build the 9 x 9 base. Place a Smithing Table at the centre above the marked block, then sneak-right-click it with Mundabitur Dust.",
+  "provenance": {
+    "source_mod": "forbidden_arcanus",
+    "tested_version": "2.6.1",
+    "notes": "Base pattern checked against the 2.6.1 documentation. Forge upgrades use separate rituals."
+  },
+  "default_variant": "build",
+  "variants": [
+    {
+      "id": "build",
+      "title": "Build / activate (Smithing Table)",
+      "palette": {
+        "P": {
+          "block": "forbidden_arcanus:polished_darkstone",
+          "label": "Polished Darkstone"
+        },
+        "G": {
+          "block": "forbidden_arcanus:gilded_chiseled_polished_darkstone",
+          "label": "Gilded Chiseled Polished Darkstone"
+        },
+        "C": {
+          "block": "forbidden_arcanus:chiseled_arcane_polished_darkstone",
+          "label": "Chiseled Arcane Polished Darkstone"
+        },
+        "S": {
+          "block": "minecraft:smithing_table",
+          "label": "Smithing Table"
+        }
+      },
+      "layers": [
+        [
+          "   PPP   ",
+          " PPPGPPP ",
+          " PGPPPGP ",
+          "PPPPCPPPP",
+          "PGPCGCPGP",
+          "PPPPCPPPP",
+          " PGPPPGP ",
+          " PPPGPPP ",
+          "   PPP   "
+        ],
+        [
+          "         ",
+          "         ",
+          "         ",
+          "         ",
+          "    S    ",
+          "         ",
+          "         ",
+          "         ",
+          "         "
+        ]
+      ]
+    }
+  ],
+  "lookups": {
+    "U": [
+      "minecraft:smithing_table",
+      "forbidden_arcanus:hephaestus_forge_tier_1",
+      "forbidden_arcanus:hephaestus_forge_tier_2",
+      "forbidden_arcanus:hephaestus_forge_tier_3",
+      "forbidden_arcanus:hephaestus_forge_tier_4",
+      "forbidden_arcanus:hephaestus_forge_tier_5"
+    ],
+    "R": [
+      "forbidden_arcanus:hephaestus_forge_tier_1",
+      "forbidden_arcanus:hephaestus_forge_tier_2",
+      "forbidden_arcanus:hephaestus_forge_tier_3",
+      "forbidden_arcanus:hephaestus_forge_tier_4",
+      "forbidden_arcanus:hephaestus_forge_tier_5"
+    ]
+  }
+}

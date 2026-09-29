@@ -1,0 +1,48 @@
+{
+  "format": 1,
+  "id": "umv_neovitae:ritual_penance",
+  "title": "Ritual of Sentient Penance",
+  "description": "Apply chosen downgrades to Sentient Armor and free Upgrade Points. Place a Master Ritual Stone at the centre and arrange the Ritual Stones as shown.",
+  "provenance": {
+    "source_mod": "neovitae",
+    "tested_version": "1.1.29",
+    "notes": "Verified against NeoVitae 1.1.29 ritual data."
+  },
+  "lookups": {
+    "U": [
+      "neovitae:master_ritual_stone"
+    ]
+  },
+  "default_variant": "base",
+  "variants": [
+    {
+      "id": "base",
+      "title": "Construction pattern",
+      "palette": {
+        "M": {
+          "block": "neovitae:master_ritual_stone",
+          "label": "Master Ritual Stone (ritual centre)"
+        },
+        "F": {
+          "block": "neovitae:fire_ritual_stone",
+          "label": "Fire Ritual Stone"
+        },
+        "T": {
+          "block": "neovitae:tenebrae_ritual_stone",
+          "label": "Tenebrae Ritual Stone"
+        }
+      },
+      "layers": [
+        [
+          "T  F  T",
+          " T   T ",
+          "   F   ",
+          "F FMF F",
+          "   F   ",
+          " T   T ",
+          "T  F  T"
+        ]
+      ]
+    }
+  ]
+}

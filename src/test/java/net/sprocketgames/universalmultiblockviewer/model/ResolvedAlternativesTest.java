@@ -43,4 +43,30 @@ class ResolvedAlternativesTest {
             new BlockOption(BlockOption.Kind.BLOCK, log)), resolved.options());
         assertEquals(0, resolved.defaultOption());
     }
+
+    @Test
+    void retainsTagStateAndMaterialPresentationAfterExpansion() {
+        var tool = new MaterialPresentation(ResourceLocation.parse("minecraft:flint_and_steel"), MaterialPresentation.Kind.REUSABLE_TOOL);
+        BlockRequirement requirement = new BlockRequirement(List.of(
+            new BlockOption(BlockOption.Kind.TAG, RUNE_TAG, Map.of("axis", "y"), tool)), 0, "Marked block");
+
+        BlockRequirement resolved = ResolvedAlternatives.resolve(requirement,
+            (tag, state) -> Stream.of(BLANK_RUNE, RUNE));
+
+        assertEquals(Map.of("axis", "y"), resolved.options().getFirst().stateProperties());
+        assertEquals(tool, resolved.options().getFirst().material());
+        assertEquals(List.of(BLANK_RUNE, RUNE), resolved.options().stream().map(BlockOption::id).toList());
+    }
+
+    @Test
+    void inheritsTheExplicitDefaultPresentationForUnmappedTagMembers() {
+        var chalk = new MaterialPresentation(ResourceLocation.parse("minecraft:stick"), MaterialPresentation.Kind.REUSABLE_TOOL);
+        BlockOption defaultGlyph = new BlockOption(BlockOption.Kind.BLOCK, BLANK_RUNE, Map.of(), chalk);
+        BlockRequirement requirement = new BlockRequirement(List.of(defaultGlyph,
+            new BlockOption(BlockOption.Kind.TAG, RUNE_TAG)), 0, "Glyph");
+
+        BlockRequirement resolved = ResolvedAlternatives.resolve(requirement, tag -> Stream.of(BLANK_RUNE, RUNE, CAPSTONE));
+
+        assertEquals(List.of(chalk, chalk, chalk), resolved.options().stream().map(BlockOption::material).toList());
+    }
 }

@@ -31,14 +31,15 @@ final class JeiMultiblockOverlayWidget implements IRecipeWidget, IJeiGuiEventLis
     @Override
     public void drawWidget(GuiGraphics graphics, double mouseX, double mouseY) {
         var font = Minecraft.getInstance().font;
-        ScrollingTitle.draw(graphics, font, state.definition().displayTitle(), 4, 5, 126, 0xFF403B33);
-        button(graphics, font, 136, "<");
-        button(graphics, font, 177, ">");
+        ScrollingTitle.draw(graphics, font, state.definition().displayTitle(), 4, 5, 132, 0xFF403B33);
+        button(graphics, font, 138, "<");
+        button(graphics, font, 176, ">");
         int variant = state.definition().variants().keySet().stream().toList().indexOf(state.variantId()) + 1;
-        drawUnshadowedCentered(graphics, font, "V:" + variant, 165, 6);
-        button(graphics, font, 198, "<");
-        button(graphics, font, 239, ">");
-        drawUnshadowedCentered(graphics, font, state.layer() < 0 ? "All" : "L:" + (state.layer() + 1), 227, 6);
+        drawUnshadowedCentered(graphics, font, "V:" + variant, 164, 6);
+        button(graphics, font, 192, "<");
+        button(graphics, font, 228, ">");
+        drawUnshadowedCentered(graphics, font, state.layer() < 0 ? "All" : "L:" + (state.layer() + 1), 216, 6);
+        ViewerButton.drawCompactList(graphics, 243, 1, 13, 13);
         graphics.flush();
     }
 
@@ -56,23 +57,25 @@ final class JeiMultiblockOverlayWidget implements IRecipeWidget, IJeiGuiEventLis
         if (button != InputConstants.MOUSE_BUTTON_LEFT) {
             return false;
         }
-        if (mouseX >= 136 && mouseX < 153) { state.cycleVariant(-1); ViewerButton.playClick(); return true; }
-        if (mouseX >= 177 && mouseX < 194) { state.cycleVariant(1); ViewerButton.playClick(); return true; }
-        if (mouseX >= 198 && mouseX < 215) { state.cycleLayer(-1); ViewerButton.playClick(); return true; }
-        if (mouseX >= 239 && mouseX < 256) { state.cycleLayer(1); ViewerButton.playClick(); return true; }
+        if (mouseX >= 138 && mouseX < 151) { state.cycleVariant(-1); ViewerButton.playClick(); return true; }
+        if (mouseX >= 176 && mouseX < 189) { state.cycleVariant(1); ViewerButton.playClick(); return true; }
+        if (mouseX >= 192 && mouseX < 205) { state.cycleLayer(-1); ViewerButton.playClick(); return true; }
+        if (mouseX >= 228 && mouseX < 241) { state.cycleLayer(1); ViewerButton.playClick(); return true; }
+        if (mouseX >= 243 && mouseX < 256) { var runtime = UniversalMultiblockViewerJeiPlugin.runtime(); if (runtime != null) runtime.getRecipesGui().showTypes(java.util.List.of(JeiMultiblockCategory.TYPE)); ViewerButton.playClick(); return true; }
         return false;
     }
 
     @Override
     public void getTooltip(mezz.jei.api.gui.builder.ITooltipBuilder tooltip, double mouseX, double mouseY) {
         if (mouseY < 1 || mouseY >= 15) return;
-        if (mouseX >= 136 && mouseX < 153) tooltip.add(Component.literal("Previous version"));
-        else if (mouseX >= 177 && mouseX < 194) tooltip.add(Component.literal("Next version"));
-        else if (mouseX >= 198 && mouseX < 215) tooltip.add(Component.literal("Previous layer"));
-        else if (mouseX >= 239 && mouseX < 256) tooltip.add(Component.literal("Next layer"));
+        if (mouseX >= 138 && mouseX < 151) tooltip.add(Component.literal("Previous version"));
+        else if (mouseX >= 176 && mouseX < 189) tooltip.add(Component.literal("Next version"));
+        else if (mouseX >= 192 && mouseX < 205) tooltip.add(Component.literal("Previous layer"));
+        else if (mouseX >= 228 && mouseX < 241) tooltip.add(Component.literal("Next layer"));
+        else if (mouseX >= 243 && mouseX < 256) tooltip.add(Component.literal("Show All Multiblock Guides"));
     }
 
     private static void button(GuiGraphics graphics, net.minecraft.client.gui.Font font, int x, String text) {
-        ViewerButton.draw(graphics, font, x, 1, 17, 14, text);
+        ViewerButton.drawCompact(graphics, font, x, 1, 13, 13, text);
     }
 }

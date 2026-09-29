@@ -1,0 +1,40 @@
+{
+  "format": 1,
+  "id": "umv_neovitae:ritual_water",
+  "title": "Ritual of the Full Spring",
+  "description": "Conjure water from the aether. Place a Master Ritual Stone at the centre and arrange the Ritual Stones as shown.",
+  "provenance": {
+    "source_mod": "neovitae",
+    "tested_version": "1.1.29",
+    "notes": "Verified against NeoVitae 1.1.29 ritual data."
+  },
+  "lookups": {
+    "U": [
+      "neovitae:master_ritual_stone"
+    ]
+  },
+  "default_variant": "base",
+  "variants": [
+    {
+      "id": "base",
+      "title": "Construction pattern",
+      "palette": {
+        "M": {
+          "block": "neovitae:master_ritual_stone",
+          "label": "Master Ritual Stone (ritual centre)"
+        },
+        "W": {
+          "block": "neovitae:water_ritual_stone",
+          "label": "Water Ritual Stone"
+        }
+      },
+      "layers": [
+        [
+          "W W",
+          " M ",
+          "W W"
+        ]
+      ]
+    }
+  ]
+}

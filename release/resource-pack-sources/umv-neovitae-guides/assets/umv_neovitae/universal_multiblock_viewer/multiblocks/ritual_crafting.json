@@ -1,0 +1,54 @@
+{
+  "format": 1,
+  "id": "umv_neovitae:ritual_crafting",
+  "title": "Rhythm of the Beating Anvil",
+  "description": "Automate crafting with vitaemantic labour. Place a Master Ritual Stone at the centre and arrange the Ritual Stones as shown.",
+  "provenance": {
+    "source_mod": "neovitae",
+    "tested_version": "1.1.29",
+    "notes": "Verified against NeoVitae 1.1.29 ritual data."
+  },
+  "lookups": {
+    "U": [
+      "neovitae:master_ritual_stone"
+    ]
+  },
+  "default_variant": "base",
+  "variants": [
+    {
+      "id": "base",
+      "title": "Construction pattern",
+      "palette": {
+        "M": {
+          "block": "neovitae:master_ritual_stone",
+          "label": "Master Ritual Stone (ritual centre)"
+        },
+        "E": {
+          "block": "neovitae:earth_ritual_stone",
+          "label": "Earth Ritual Stone"
+        },
+        "F": {
+          "block": "neovitae:fire_ritual_stone",
+          "label": "Fire Ritual Stone"
+        },
+        "T": {
+          "block": "neovitae:tenebrae_ritual_stone",
+          "label": "Tenebrae Ritual Stone"
+        }
+      },
+      "layers": [
+        [
+          "T   E   T",
+          " F  T  F ",
+          "  E F E  ",
+          "   T T   ",
+          "ETF M FTE",
+          "   T T   ",
+          "  E F E  ",
+          " F  T  F ",
+          "T   E   T"
+        ]
+      ]
+    }
+  ]
+}

@@ -1,0 +1,154 @@
+{
+  "format": 1,
+  "id": "umv_occultism:craft_afrit",
+  "title": "Sevira's Permanent Confinement",
+  "description": "Bind an Afrit into an object for advanced permanent infusions.",
+  "provenance": {
+    "source_mod": "occultism",
+    "tested_version": "1.224.4",
+    "notes": "Verified against Occultism 1.224.4 ritual data."
+  },
+  "lookups": {
+    "U": [
+      "occultism:golden_sacrificial_bowl"
+    ]
+  },
+  "default_variant": "ritual_layout",
+  "variants": [
+    {
+      "id": "ritual_layout",
+      "title": "Ritual layout",
+      "palette": {
+        "0": {
+          "label": "Central sacrificial bowl",
+          "any_of": [
+            {
+              "block": "occultism:golden_sacrificial_bowl"
+            },
+            {
+              "tag": "occultism:center_sacrificial_bowl"
+            }
+          ],
+          "default": "occultism:golden_sacrificial_bowl"
+        },
+        "1": {
+          "label": "Accepted candle",
+          "any_of": [
+            {
+              "block": "minecraft:candle"
+            },
+            {
+              "tag": "minecraft:candles"
+            }
+          ],
+          "default": "minecraft:candle"
+        },
+        "2": {
+          "block": "minecraft:skeleton_skull"
+        },
+        "3": {
+          "block": "occultism:spirit_attuned_crystal"
+        },
+        "G": {
+          "label": "Accepted foundation glyphs dark",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_gray",
+              "material": { "item": "occultism:chalk_gray", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:foundation_glyphs_dark"
+            }
+          ],
+          "default": "occultism:chalk_glyph_gray"
+        },
+        "L": {
+          "label": "Accepted glyphs lime",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_lime",
+              "material": { "item": "occultism:chalk_lime", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:glyphs_lime"
+            }
+          ],
+          "default": "occultism:chalk_glyph_lime"
+        },
+        "O": {
+          "label": "Accepted glyphs orange",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_orange",
+              "material": { "item": "occultism:chalk_orange", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:glyphs_orange"
+            }
+          ],
+          "default": "occultism:chalk_glyph_orange"
+        },
+        "R": {
+          "label": "Accepted glyphs red",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_red",
+              "material": { "item": "occultism:chalk_red", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:glyphs_red"
+            }
+          ],
+          "default": "occultism:chalk_glyph_red"
+        },
+        "W": {
+          "label": "Accepted foundation glyphs any",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_white",
+              "material": { "item": "occultism:chalk_white", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:foundation_glyphs_any"
+            }
+          ],
+          "default": "occultism:chalk_glyph_white"
+        },
+        "X": {
+          "label": "Accepted glyphs purple",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_purple",
+              "material": { "item": "occultism:chalk_purple", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:glyphs_purple"
+            }
+          ],
+          "default": "occultism:chalk_glyph_purple"
+        }
+      },
+      "layers": [
+        [
+          "                 ",
+          "  RXOXOXRXOXOXR  ",
+          " RX    3 3    XR ",
+          " X  XLXLXLXLX  X ",
+          " O XL 2   2 LX O ",
+          " X L  WXXXW  L X ",
+          " O X2WG1 1GW2X O ",
+          " X3L X1G G1X L3X ",
+          " R X X  0  X X R ",
+          " X3L X1G G1X L3X ",
+          " O X2WG1 1GW2X O ",
+          " X L  WXXXW  L X ",
+          " O XL 2   2 LX O ",
+          " X  XLXLXLXLX  X ",
+          " RX    3 3    XR ",
+          "  RXOXOXRXOXOXR  ",
+          "                 "
+        ]
+      ]
+    }
+  ]
+}

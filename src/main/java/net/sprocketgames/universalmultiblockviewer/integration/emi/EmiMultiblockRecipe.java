@@ -75,17 +75,18 @@ public final class EmiMultiblockRecipe implements EmiRecipe {
     @Override
     public void addWidgets(WidgetHolder widgets) {
         state.resetViewportBackground();
-        widgets.addDrawable(4, 1, 128, 14, (graphics, mouseX, mouseY, delta) ->
-            ScrollingTitle.draw(graphics, Minecraft.getInstance().font, state.definition().displayTitle(), 0, 4, 128, 0xFF403B33));
+        widgets.addDrawable(4, 1, 132, 14, (graphics, mouseX, mouseY, delta) ->
+            ScrollingTitle.draw(graphics, Minecraft.getInstance().font, state.definition().displayTitle(), 0, 4, 132, 0xFF403B33));
         widgets.addDrawable(136, 1, 120, 14, (graphics, mouseX, mouseY, delta) -> {
             var font = Minecraft.getInstance().font;
-            ViewerButton.draw(graphics, font, 0, 0, 17, 14, "<");
-            ViewerButton.draw(graphics, font, 41, 0, 17, 14, ">");
+            ViewerButton.drawCompact(graphics, font, 2, 0, 13, 13, "<");
+            ViewerButton.drawCompact(graphics, font, 40, 0, 13, 13, ">");
             int variant = state.definition().variants().keySet().stream().toList().indexOf(state.variantId()) + 1;
-            drawUnshadowedCentered(graphics, font, "V:" + variant, 29, 5);
-            ViewerButton.draw(graphics, font, 62, 0, 17, 14, "<");
-            ViewerButton.draw(graphics, font, 103, 0, 17, 14, ">");
-            drawUnshadowedCentered(graphics, font, state.layer() < 0 ? "All" : "L:" + (state.layer() + 1), 91, 5);
+            drawUnshadowedCentered(graphics, font, "V:" + variant, 28, 5);
+            ViewerButton.drawCompact(graphics, font, 56, 0, 13, 13, "<");
+            ViewerButton.drawCompact(graphics, font, 92, 0, 13, 13, ">");
+            drawUnshadowedCentered(graphics, font, state.layer() < 0 ? "All" : "L:" + (state.layer() + 1), 80, 5);
+            ViewerButton.drawCompactList(graphics, 107, 0, 13, 13);
             EmiLayerInputHandler.record(state, graphics);
         });
         widgets.addDrawable(4, 18, net.sprocketgames.universalmultiblockviewer.client.SelectedBlockInspector.WIDTH, net.sprocketgames.universalmultiblockviewer.client.SelectedBlockInspector.HEIGHT, (graphics, mouseX, mouseY, delta) -> {
@@ -103,9 +104,12 @@ public final class EmiMultiblockRecipe implements EmiRecipe {
             int gridX = viewportX + controlX(viewportWidth, 1);
             int backgroundX = viewportX + controlX(viewportWidth, 2);
             int alternativesX = viewportX + controlX(viewportWidth, 3);
+            if (!state.definition().displayDescription().isBlank()) {
+                ViewerButton.drawCompactInfo(graphics, Minecraft.getInstance().font,
+                    viewportX + viewportWidth - CONTROL_SIZE - 3, 3);
+            }
             if (state.hasOptionalBlocks()) {
-                ViewerButton.drawCompact(graphics, Minecraft.getInstance().font, viewportX + controlX(viewportWidth, 4),
-                    resetY, CONTROL_SIZE, CONTROL_SIZE, "O",
+                ViewerButton.drawCompact(graphics, Minecraft.getInstance().font, viewportX + controlX(viewportWidth, 4), resetY, CONTROL_SIZE, CONTROL_SIZE, "O",
                     state.showOptionalBlocks() ? ViewerButton.OPTIONAL_OUTLINE_ORANGE : 0xFF302D27);
             }
             ViewerButton.drawCompact(graphics, Minecraft.getInstance().font, alternativesX, resetY, CONTROL_SIZE, CONTROL_SIZE, "A",

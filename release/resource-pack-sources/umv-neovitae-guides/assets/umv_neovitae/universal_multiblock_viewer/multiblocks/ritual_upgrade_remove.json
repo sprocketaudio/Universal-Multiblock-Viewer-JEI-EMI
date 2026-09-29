@@ -1,0 +1,56 @@
+{
+  "format": 1,
+  "id": "umv_neovitae:ritual_upgrade_remove",
+  "title": "Tabula Rasa",
+  "description": "Remove every upgrade from worn Sentient Armor. Place a Master Ritual Stone at the centre and arrange the Ritual Stones as shown.",
+  "provenance": {
+    "source_mod": "neovitae",
+    "tested_version": "1.1.29",
+    "notes": "Verified against NeoVitae 1.1.29 ritual data."
+  },
+  "lookups": {
+    "U": [
+      "neovitae:master_ritual_stone"
+    ]
+  },
+  "default_variant": "base",
+  "variants": [
+    {
+      "id": "base",
+      "title": "Construction pattern",
+      "palette": {
+        "M": {
+          "block": "neovitae:master_ritual_stone",
+          "label": "Master Ritual Stone (ritual centre)"
+        },
+        "E": {
+          "block": "neovitae:earth_ritual_stone",
+          "label": "Earth Ritual Stone"
+        },
+        "F": {
+          "block": "neovitae:fire_ritual_stone",
+          "label": "Fire Ritual Stone"
+        },
+        "W": {
+          "block": "neovitae:water_ritual_stone",
+          "label": "Water Ritual Stone"
+        },
+        "T": {
+          "block": "neovitae:tenebrae_ritual_stone",
+          "label": "Tenebrae Ritual Stone"
+        }
+      },
+      "layers": [
+        [
+          "E  T  E",
+          " F W F ",
+          "  T T  ",
+          "TW M WT",
+          "  T T  ",
+          " F W F ",
+          "E  T  E"
+        ]
+      ]
+    }
+  ]
+}

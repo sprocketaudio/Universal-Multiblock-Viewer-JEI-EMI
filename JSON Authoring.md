@@ -132,6 +132,7 @@ Use the `lookups` object to choose how players find the guide:
 - `R` means the guide appears when the player presses `R` (**Recipes**) on one of these items.
 - You may use `U`, `R`, or both, but at least one list must contain an item.
 - You may list several items. This is useful when several controller tiers open the same guide.
+- Put the guide's main controller or starting block first in `U`. Universal Multiblock Viewer keeps this item first in the materials palette and marks it with a green frame. If `U` is not present, it uses the first item in `R` instead.
 - Only explicitly listed items open the guide. Materials used in the structure do not automatically become lookup items.
 
 Use item IDs here, not tags. Keep normal JEI/EMI recipes and uses intact: the viewer guide appears alongside them.
@@ -208,7 +209,18 @@ Use `state` when the block must use particular block-state properties. State val
 }
 ```
 
-Only exact `block` entries can use `state`. The property name and value must exist on that block.
+You can also use `state` with a `tag`. The viewer applies the properties to every compatible block expanded from that tag and warns in the log about incompatible tag members. The property name and value must exist on each block that uses it.
+
+Write the block ID and its state as separate fields. For example, this guide renders an input hatch facing north:
+
+```json
+{
+  "block": "examplemod:input_hatch",
+  "state": {
+    "facing": "north"
+  }
+}
+```
 
 ### Block tag
 
@@ -245,6 +257,52 @@ The `default` is the block shown first and used for the materials list. It must 
 Tags in `any_of` are expanded into their individual blocks in the selected-block inspector. If an explicit block is also present through a tag, it appears only once. Different block states remain separate choices when you explicitly author them.
 
 If you omit `default`, the first `any_of` entry is the default. Put an exact block first when you want a predictable default material.
+
+## Showing an item instead of the rendered block
+
+Most blocks have a matching item, so you normally do not need to do anything extra. Some mods place a special rendered block when the player uses a different item, such as a reusable chalk item that paints a glyph. Add a `material` object to that exact block or tag option to tell the materials strip which item to show.
+
+```json
+"G": {
+  "block": "examplemod:blue_glyph",
+  "material": {
+    "item": "examplemod:blue_chalk",
+    "kind": "reusable_tool"
+  }
+}
+```
+
+The block still renders as `examplemod:blue_glyph`. The material strip shows `examplemod:blue_chalk`, and clicking its icon opens recipes for the chalk item.
+
+`material` has these fields:
+
+| Field | What it does |
+| --- | --- |
+| `item` | The item ID shown in the materials strip. It is required for `required_item` and `reusable_tool`. |
+| `kind` | Optional collection behaviour: `placed_block`, `required_item`, or `reusable_tool`. |
+
+- `placed_block` is the normal default: count one item for every placed position. You may provide an `item` to replace the displayed item while keeping that count.
+- `required_item` counts one of the named item for every matching position. Use this for a consumed component that is not the placed block's item.
+- `reusable_tool` shows one named item even when it creates many matching positions. Use this for reusable tools such as chalk; the viewer does not claim one whole tool is consumed per glyph.
+
+For `any_of`, put `material` inside the individual choice it belongs to. A `material` on a tag applies to every block expanded from that tag. The viewer keeps the explicit default first and removes duplicate expanded blocks.
+
+```json
+"G": {
+  "any_of": [
+    {
+      "block": "examplemod:blue_glyph",
+      "material": { "item": "examplemod:blue_chalk", "kind": "reusable_tool" }
+    },
+    {
+      "tag": "examplemod:other_glyphs",
+      "state": { "facing": "north" },
+      "material": { "item": "examplemod:other_chalk", "kind": "reusable_tool" }
+    }
+  ],
+  "default": "examplemod:blue_glyph"
+}
+```
 
 ## Optional blocks
 

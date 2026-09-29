@@ -129,6 +129,30 @@ class MultiblockDefinitionParserTest {
         assertEquals("z", options.get(1).stateProperties().get("axis"));
     }
 
+    @Test
+    void parsesTagStatesAndCustomReusableMaterialPresentation() {
+        var definition = parse("""
+            {"format":1,"title":"Materials","lookups":{"U":["minecraft:stick"]},"variants":[
+              {"id":"base","palette":{"A":{"tag":"test:chalk_marks","state":{"facing":"north"},
+                "material":{"item":"minecraft:flint_and_steel","kind":"reusable_tool"}}},"layers":[["A"]]}
+            ]}
+            """);
+        var option = definition.initialVariant().cells().values().iterator().next().defaultBlock();
+        assertEquals("north", option.stateProperties().get("facing"));
+        assertEquals(ResourceLocation.parse("minecraft:flint_and_steel"), option.material().item());
+        assertEquals(net.sprocketgames.universalmultiblockviewer.model.MaterialPresentation.Kind.REUSABLE_TOOL, option.material().kind());
+    }
+
+    @Test
+    void explainsThatBracketStateSyntaxIsNotAValidBlockId() {
+        IllegalArgumentException error = assertThrows(IllegalArgumentException.class, () -> parse("""
+            {"format":1,"title":"Bad state","lookups":{"U":["minecraft:stick"]},"variants":[
+              {"id":"base","palette":{"A":{"block":"minecraft:oak_log[axis=x]"}},"layers":[["A"]]}
+            ]}
+            """));
+        assertTrue(error.getMessage().contains("use a separate state object"));
+    }
+
     private static net.sprocketgames.universalmultiblockviewer.model.MultiblockDefinition parse(String json) {
         return MultiblockDefinitionParser.parse(ResourceLocation.parse("test:guide"), JsonParser.parseString(json).getAsJsonObject());
     }

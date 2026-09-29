@@ -28,3 +28,7 @@ hs_err_pid*.log
 !**/src/**/run/
 **/src/generated/**/.cache/
 repo/
+
+### Temporary release archives ###
+release/resource-packs/*.validated*.zip
+release/resource-packs/*.rebuild.zip

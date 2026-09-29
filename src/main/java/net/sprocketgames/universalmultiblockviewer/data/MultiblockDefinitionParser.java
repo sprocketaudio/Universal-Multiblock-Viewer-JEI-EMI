@@ -13,6 +13,7 @@ import net.sprocketgames.universalmultiblockviewer.model.BlockRequirement;
 import net.sprocketgames.universalmultiblockviewer.model.GridPos;
 import net.sprocketgames.universalmultiblockviewer.model.GuideProvenance;
 import net.sprocketgames.universalmultiblockviewer.model.MultiblockDefinition;
+import net.sprocketgames.universalmultiblockviewer.model.MaterialPresentation;
 import net.sprocketgames.universalmultiblockviewer.model.StructureVariant;
 
 /** Strict parser for the version-one, client-resource definition format. */
@@ -212,9 +213,6 @@ public final class MultiblockDefinitionParser {
         }
         Map<String, String> properties = new LinkedHashMap<>();
         if (option.has("state")) {
-            if (!hasBlock) {
-                throw error(path + ".state", "is only supported for an exact block");
-            }
             JsonObject state = object(option.get("state"), path + ".state");
             for (Map.Entry<String, JsonElement> entry : state.entrySet()) {
                 if (entry.getKey().isBlank()) {
@@ -225,7 +223,33 @@ public final class MultiblockDefinitionParser {
         }
         String idPath = path + (hasBlock ? ".block" : ".tag");
         return new BlockOption(hasBlock ? BlockOption.Kind.BLOCK : BlockOption.Kind.TAG,
-            id(string(option.get(hasBlock ? "block" : "tag"), idPath), idPath), properties);
+            id(string(option.get(hasBlock ? "block" : "tag"), idPath), idPath), properties,
+            parseMaterial(option, path));
+    }
+
+    private static MaterialPresentation parseMaterial(JsonObject option, String path) {
+        if (!option.has("material")) return MaterialPresentation.DEFAULT;
+        JsonObject material = object(option.get("material"), path + ".material");
+        for (String key : material.keySet()) {
+            if (!key.equals("item") && !key.equals("kind")) {
+                throw error(path + ".material." + key, "unknown material field; expected item or kind");
+            }
+        }
+        MaterialPresentation.Kind kind = MaterialPresentation.Kind.REQUIRED_ITEM;
+        if (material.has("kind")) {
+            String raw = string(material.get("kind"), path + ".material.kind");
+            try {
+                kind = MaterialPresentation.Kind.valueOf(raw.toUpperCase(java.util.Locale.ROOT));
+            } catch (IllegalArgumentException exception) {
+                throw error(path + ".material.kind", "expected placed_block, required_item, or reusable_tool");
+            }
+        }
+        ResourceLocation item = material.has("item")
+            ? id(string(material.get("item"), path + ".material.item"), path + ".material.item") : null;
+        if (item == null && kind != MaterialPresentation.Kind.PLACED_BLOCK) {
+            throw error(path + ".material.item", "is required for " + kind.name().toLowerCase(java.util.Locale.ROOT));
+        }
+        return new MaterialPresentation(item, kind);
     }
 
     private static List<ResourceLocation> ids(JsonArray values, String path) {
@@ -299,6 +323,9 @@ public final class MultiblockDefinitionParser {
     }
 
     private static ResourceLocation id(String raw, String path) {
+        if (raw.indexOf('[') >= 0 || raw.indexOf(']') >= 0) {
+            throw error(path, "block-state brackets are not part of an id; use a separate state object, for example \"state\": { \"facing\": \"north\" }");
+        }
         ResourceLocation parsed = ResourceLocation.tryParse(raw);
         if (parsed == null) {
             throw error(path, "invalid resource id '" + raw + "'");

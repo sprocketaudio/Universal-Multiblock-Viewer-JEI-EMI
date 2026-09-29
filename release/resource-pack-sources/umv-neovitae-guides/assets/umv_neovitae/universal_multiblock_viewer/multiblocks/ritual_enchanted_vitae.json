@@ -1,0 +1,78 @@
+{
+  "format": 1,
+  "id": "umv_neovitae:ritual_enchanted_vitae",
+  "title": "Enchanted Vitae",
+  "description": "Transfer book enchantments onto one item without consuming the books. Place a Master Ritual Stone at the centre and arrange the Ritual Stones as shown.",
+  "provenance": {
+    "source_mod": "neovitae",
+    "tested_version": "1.1.29",
+    "notes": "Verified against NeoVitae 1.1.29 ritual data."
+  },
+  "lookups": {
+    "U": [
+      "neovitae:master_ritual_stone"
+    ]
+  },
+  "default_variant": "base",
+  "variants": [
+    {
+      "id": "base",
+      "title": "Construction pattern",
+      "palette": {
+        "M": {
+          "block": "neovitae:master_ritual_stone",
+          "label": "Master Ritual Stone (ritual centre)"
+        },
+        "A": {
+          "block": "neovitae:air_ritual_stone",
+          "label": "Air Ritual Stone"
+        },
+        "E": {
+          "block": "neovitae:earth_ritual_stone",
+          "label": "Earth Ritual Stone"
+        },
+        "F": {
+          "block": "neovitae:fire_ritual_stone",
+          "label": "Fire Ritual Stone"
+        },
+        "W": {
+          "block": "neovitae:water_ritual_stone",
+          "label": "Water Ritual Stone"
+        },
+        "T": {
+          "block": "neovitae:tenebrae_ritual_stone",
+          "label": "Tenebrae Ritual Stone"
+        }
+      },
+      "layers": [
+        [
+          "T  T  T",
+          " T T T ",
+          "  TTT  ",
+          "TTTMTTT",
+          "  TTT  ",
+          " T T T ",
+          "T  T  T"
+        ],
+        [
+          "T  T  T",
+          "       ",
+          "       ",
+          "T     T",
+          "       ",
+          "       ",
+          "T  T  T"
+        ],
+        [
+          "T  W  T",
+          "       ",
+          "       ",
+          "A     F",
+          "       ",
+          "       ",
+          "T  E  T"
+        ]
+      ]
+    }
+  ]
+}

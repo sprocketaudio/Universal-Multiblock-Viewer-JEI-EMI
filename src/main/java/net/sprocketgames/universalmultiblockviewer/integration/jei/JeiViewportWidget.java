@@ -11,6 +11,7 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.network.chat.Component;
 import net.sprocketgames.universalmultiblockviewer.client.BlockModelViewportRenderer;
 import net.sprocketgames.universalmultiblockviewer.client.ViewerButton;
+import net.sprocketgames.universalmultiblockviewer.client.ViewerTooltip;
 import net.sprocketgames.universalmultiblockviewer.client.SelectedBlockOptions;
 import net.sprocketgames.universalmultiblockviewer.client.SelectedBlockInspector;
 import net.sprocketgames.universalmultiblockviewer.model.BlockOption;
@@ -68,9 +69,12 @@ final class JeiViewportWidget implements IRecipeWidget, IJeiGuiEventListener, me
         int gridX = viewportX + controlX(viewportWidth, 1);
         int backgroundX = viewportX + controlX(viewportWidth, 2);
         int alternativesX = viewportX + controlX(viewportWidth, 3);
+        if (hasDescription()) {
+            ViewerButton.drawCompactInfo(graphics, net.minecraft.client.Minecraft.getInstance().font,
+                viewportX + viewportWidth - CONTROL_SIZE - 3, 3);
+        }
         if (state.hasOptionalBlocks()) {
-            ViewerButton.drawCompact(graphics, net.minecraft.client.Minecraft.getInstance().font,
-                viewportX + controlX(viewportWidth, 4), resetY, CONTROL_SIZE, CONTROL_SIZE, "O",
+            ViewerButton.drawCompact(graphics, net.minecraft.client.Minecraft.getInstance().font, viewportX + controlX(viewportWidth, 4), resetY, CONTROL_SIZE, CONTROL_SIZE, "O",
                 state.showOptionalBlocks() ? ViewerButton.OPTIONAL_OUTLINE_ORANGE : 0xFF302D27);
         }
         ViewerButton.drawCompact(graphics, net.minecraft.client.Minecraft.getInstance().font, alternativesX, resetY, CONTROL_SIZE, CONTROL_SIZE, "A",
@@ -93,13 +97,16 @@ final class JeiViewportWidget implements IRecipeWidget, IJeiGuiEventListener, me
         double viewportMouseX = mouseX - viewportX();
         int option = SelectedBlockOptions.optionAt(state, viewportMouseX, mouseY);
         if (option >= 0) {
-            tooltip.addAll(net.sprocketgames.universalmultiblockviewer.viewer.ViewerIngredientResolver.stackFor(state.selectedRequirement().options().get(option))
+            tooltip.addAll(net.sprocketgames.universalmultiblockviewer.viewer.ViewerIngredientResolver.materialStackFor(state.selectedRequirement().options().get(option))
                 .getTooltipLines(net.minecraft.world.item.Item.TooltipContext.EMPTY, net.minecraft.client.Minecraft.getInstance().player,
                     net.minecraft.world.item.TooltipFlag.Default.NORMAL));
             return;
         }
         if (isResetButton(viewportMouseX, mouseY, viewportWidth())) {
             tooltip.add(Component.literal("Reset view"));
+        } else if (isInfoIndicator(viewportMouseX, mouseY, viewportWidth())) {
+            tooltip.addAll(ViewerTooltip.description(net.minecraft.client.Minecraft.getInstance().font,
+                state.definition(), 200));
         } else if (isGridButton(viewportMouseX, mouseY, viewportWidth())) {
             tooltip.add(Component.literal(state.showFloorGrid() ? "Hide Floor Grid" : "Show Floor Grid"));
         } else if (isAlternativeHighlightButton(viewportMouseX, mouseY, viewportWidth())) {
@@ -127,6 +134,10 @@ final class JeiViewportWidget implements IRecipeWidget, IJeiGuiEventListener, me
         if (!inViewport(mouseX, mouseY)) return false;
         double viewportMouseX = mouseX - viewportX();
         int viewportWidth = viewportWidth();
+        if (isInfoIndicator(viewportMouseX, mouseY, viewportWidth)) {
+            viewportPointerCaptured = false;
+            return true;
+        }
         if (button == InputConstants.MOUSE_BUTTON_LEFT && isAlternativeHighlightButton(viewportMouseX, mouseY, viewportWidth)) {
             viewportPointerCaptured = false;
             state.toggleAlternativeHighlights();
@@ -173,7 +184,7 @@ final class JeiViewportWidget implements IRecipeWidget, IJeiGuiEventListener, me
             viewportPointerCaptured = false;
             var runtime = UniversalMultiblockViewerJeiPlugin.runtime();
             if (runtime != null) runtime.getRecipesGui().show(runtime.getJeiHelpers().getFocusFactory().createFocus(RecipeIngredientRole.INPUT,
-                VanillaTypes.ITEM_STACK, net.sprocketgames.universalmultiblockviewer.viewer.ViewerIngredientResolver.stackFor(state.selectedRequirement().options().get(option))));
+                VanillaTypes.ITEM_STACK, net.sprocketgames.universalmultiblockviewer.viewer.ViewerIngredientResolver.materialStackFor(state.selectedRequirement().options().get(option))));
             selectedItemLeftClick = true;
             return true;
         }
@@ -274,7 +285,7 @@ final class JeiViewportWidget implements IRecipeWidget, IJeiGuiEventListener, me
         if (!inViewport(mouseX, mouseY)) return false;
         double viewportMouseX = mouseX - viewportX();
         if (SelectedBlockOptions.scrollAreaAt(state, viewportMouseX, mouseY)) {
-            state.scrollAlternativesSmooth(-verticalAmount, SelectedBlockOptions.VISIBLE);
+            SelectedBlockOptions.scroll(state, -verticalAmount);
             return true;
         }
         state.zoomBy(verticalAmount);
@@ -306,6 +317,16 @@ final class JeiViewportWidget implements IRecipeWidget, IJeiGuiEventListener, me
     private boolean isOptionalButton(double mouseX, double mouseY, int width) {
         return state.hasOptionalBlocks() && inControl(mouseX, mouseY, width, 4);
     }
+
+    private boolean hasDescription() {
+        return !state.definition().displayDescription().isBlank();
+    }
+
+    private boolean isInfoIndicator(double mouseX, double mouseY, int width) {
+        int x = width - CONTROL_SIZE - 3;
+        return hasDescription() && mouseX >= x && mouseX < x + CONTROL_SIZE && mouseY >= 3 && mouseY < 14;
+    }
+
 
     private static int controlX(int width, int indexFromRight) {
         return width - (indexFromRight + 1) * CONTROL_SIZE - indexFromRight * CONTROL_GAP - 3;

@@ -1,0 +1,56 @@
+{
+  "format": 1,
+  "id": "umv_neovitae:ritual_crystallum_fractura",
+  "title": "Crystallum Fractura",
+  "description": "Harvest mature crystal clusters and encourage their growth. Place a Master Ritual Stone at the centre and arrange the Ritual Stones as shown.",
+  "provenance": {
+    "source_mod": "neovitae",
+    "tested_version": "1.1.29",
+    "notes": "Verified against NeoVitae 1.1.29 ritual data."
+  },
+  "lookups": {
+    "U": [
+      "neovitae:master_ritual_stone"
+    ]
+  },
+  "default_variant": "base",
+  "variants": [
+    {
+      "id": "base",
+      "title": "Construction pattern",
+      "palette": {
+        "M": {
+          "block": "neovitae:master_ritual_stone",
+          "label": "Master Ritual Stone (ritual centre)"
+        },
+        "A": {
+          "block": "neovitae:air_ritual_stone",
+          "label": "Air Ritual Stone"
+        },
+        "E": {
+          "block": "neovitae:earth_ritual_stone",
+          "label": "Earth Ritual Stone"
+        },
+        "F": {
+          "block": "neovitae:fire_ritual_stone",
+          "label": "Fire Ritual Stone"
+        },
+        "T": {
+          "block": "neovitae:tenebrae_ritual_stone",
+          "label": "Tenebrae Ritual Stone"
+        }
+      },
+      "layers": [
+        [
+          "T  E  T",
+          " T F T ",
+          "  EAE  ",
+          "EFAMAFE",
+          "  EAE  ",
+          " T F T ",
+          "T  E  T"
+        ]
+      ]
+    }
+  ]
+}

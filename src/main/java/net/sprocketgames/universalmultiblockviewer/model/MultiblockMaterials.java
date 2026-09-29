@@ -21,16 +21,25 @@ public final class MultiblockMaterials {
     }
 
     private static List<MaterialEntry> entries(StructureVariant variant, boolean optional) {
-        // Requirements describe position semantics. The BOM describes presentation materials, so
-        // distinct positions that share an authored default must be counted in one stack.
-        Map<BlockOption, MaterialEntry> counts = new LinkedHashMap<>();
+        // Requirements describe positions. The BOM describes items, so orientations and separate
+        // requirements that present the same item are deliberately merged.
+        Map<MaterialKey, MaterialEntry> counts = new LinkedHashMap<>();
         variant.cells().values().stream().filter(requirement -> requirement.optional() == optional).forEach(requirement ->
-            counts.compute(requirement.defaultBlock(), (block, previous) -> previous == null
-                ? new MaterialEntry(requirement, 1)
-                : new MaterialEntry(previous.requirement(), previous.count() + 1)));
+            counts.compute(MaterialKey.of(requirement.defaultBlock()), (key, previous) -> previous == null
+                ? new MaterialEntry(requirement, 1, 1, key.kind())
+                : new MaterialEntry(previous.requirement(), key.kind() == MaterialPresentation.Kind.REUSABLE_TOOL
+                    ? 1 : previous.count() + 1, previous.placedCount() + 1, key.kind())));
         List<MaterialEntry> entries = new ArrayList<>();
         entries.addAll(counts.values());
-        entries.sort(Comparator.comparing(entry -> entry.requirement().defaultBlock().id().toString()));
+        entries.sort(Comparator.comparing(entry -> MaterialKey.of(entry.requirement().defaultBlock()).itemId().toString()));
         return List.copyOf(entries);
+    }
+
+    /** Keyed by the displayed/collected item, never by a rendered state orientation. */
+    public record MaterialKey(net.minecraft.resources.ResourceLocation itemId, MaterialPresentation.Kind kind) {
+        static MaterialKey of(BlockOption option) {
+            var presentation = option.material();
+            return new MaterialKey(presentation.item() == null ? option.id() : presentation.item(), presentation.kind());
+        }
     }
 }

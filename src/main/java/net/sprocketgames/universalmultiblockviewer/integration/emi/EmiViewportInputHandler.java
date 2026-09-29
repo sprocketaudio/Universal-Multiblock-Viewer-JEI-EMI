@@ -13,6 +13,7 @@ import net.sprocketgames.universalmultiblockviewer.viewer.ViewportProjection;
 import net.sprocketgames.universalmultiblockviewer.viewer.ViewerState;
 import net.sprocketgames.universalmultiblockviewer.viewer.ViewerIngredientResolver;
 import net.sprocketgames.universalmultiblockviewer.client.ViewerButton;
+import net.sprocketgames.universalmultiblockviewer.client.ViewerTooltip;
 import net.sprocketgames.universalmultiblockviewer.client.SelectedBlockOptions;
 import net.sprocketgames.universalmultiblockviewer.client.SelectedBlockInspector;
 import net.sprocketgames.universalmultiblockviewer.viewer.ViewerPanelLayout;
@@ -49,7 +50,7 @@ final class EmiViewportInputHandler {
         if (!inViewport(viewport.state(), x, y)) return;
         double viewportX = x - ViewerPanelLayout.viewportX(viewport.state());
         if (SelectedBlockOptions.scrollAreaAt(viewport.state(), viewportX, y)) {
-            viewport.state().scrollAlternativesSmooth(-event.getScrollDeltaY(), SelectedBlockOptions.VISIBLE);
+            SelectedBlockOptions.scroll(viewport.state(), -event.getScrollDeltaY());
             event.setCanceled(true);
             return;
         }
@@ -73,6 +74,10 @@ final class EmiViewportInputHandler {
         if (!inViewport(viewport.state(), x, y)) return;
         double viewportX = x - ViewerPanelLayout.viewportX(viewport.state());
         int viewportWidth = ViewerPanelLayout.viewportWidth(viewport.state());
+        if (isInfoIndicator(viewport.state(), viewportX, y, viewportWidth)) {
+            event.setCanceled(true);
+            return;
+        }
         if (event.getButton() == InputConstants.MOUSE_BUTTON_LEFT
             && isAlternativeHighlightButton(viewportX, y, viewportWidth, viewport.height())) {
             viewport.state().toggleAlternativeHighlights();
@@ -117,7 +122,7 @@ final class EmiViewportInputHandler {
             return;
         }
         if (event.getButton() == InputConstants.MOUSE_BUTTON_LEFT && option >= 0) {
-            EmiApi.displayRecipes(EmiStack.of(ViewerIngredientResolver.stackFor(viewport.state().selectedRequirement().options().get(option))));
+            EmiApi.displayRecipes(EmiStack.of(ViewerIngredientResolver.materialStackFor(viewport.state().selectedRequirement().options().get(option))));
             event.setCanceled(true);
             return;
         }
@@ -192,7 +197,11 @@ final class EmiViewportInputHandler {
         int option = SelectedBlockOptions.optionAt(viewport.state(), viewportX, y);
         if (option >= 0) {
             event.getGuiGraphics().renderTooltip(Minecraft.getInstance().font,
-                ViewerIngredientResolver.stackFor(viewport.state().selectedRequirement().options().get(option)), event.getMouseX(), event.getMouseY());
+                ViewerIngredientResolver.materialStackFor(viewport.state().selectedRequirement().options().get(option)), event.getMouseX(), event.getMouseY());
+        } else if (isInfoIndicator(viewport.state(), viewportX, y, ViewerPanelLayout.viewportWidth(viewport.state()))) {
+            event.getGuiGraphics().renderTooltip(Minecraft.getInstance().font,
+                ViewerTooltip.descriptionVisual(Minecraft.getInstance().font, viewport.state().definition(), 200),
+                event.getMouseX(), event.getMouseY());
         } else if (isResetButton(viewportX, y, ViewerPanelLayout.viewportWidth(viewport.state()), viewport.height())) {
             event.getGuiGraphics().renderTooltip(Minecraft.getInstance().font, net.minecraft.network.chat.Component.literal("Reset view"), event.getMouseX(), event.getMouseY());
         } else if (isGridButton(viewport.state(), viewportX, y, ViewerPanelLayout.viewportWidth(viewport.state()), viewport.height())) {
@@ -244,6 +253,13 @@ final class EmiViewportInputHandler {
     private static boolean isOptionalButton(ViewerState state, double x, double y, int width, int height) {
         return state.hasOptionalBlocks() && inControl(x, y, width, height, 4);
     }
+
+    private static boolean isInfoIndicator(ViewerState state, double x, double y, int width) {
+        int infoX = width - CONTROL_SIZE - 3;
+        return !state.definition().displayDescription().isBlank()
+            && x >= infoX && x < infoX + CONTROL_SIZE && y >= 3 && y < 14;
+    }
+
 
     private static int controlX(int width, int indexFromRight) {
         return width - (indexFromRight + 1) * CONTROL_SIZE - indexFromRight * CONTROL_GAP - 3;

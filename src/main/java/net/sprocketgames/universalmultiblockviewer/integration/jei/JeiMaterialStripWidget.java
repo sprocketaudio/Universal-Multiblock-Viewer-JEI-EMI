@@ -25,12 +25,13 @@ final class JeiMaterialStripWidget implements IRecipeWidget, IJeiGuiEventListene
     @Override public ScreenPosition getPosition() { return position; }
     @Override public ScreenRectangle getArea() { return area; }
     @Override public void drawWidget(GuiGraphics graphics, double mouseX, double mouseY) {
+        MaterialStrip.updateHoveredMaterial(state, stripX(mouseX), stripY(mouseY));
         MaterialStrip.render(state, graphics, -MaterialStrip.X, -MaterialStrip.Y);
     }
     @Override public void getTooltip(ITooltipBuilder tooltip, double mouseX, double mouseY) {
         var material = MaterialStrip.at(state, stripX(mouseX), stripY(mouseY));
         if (material != null) {
-            var stack = ViewerIngredientResolver.stackFor(material.requirement().defaultBlock());
+            var stack = ViewerIngredientResolver.materialStackFor(material.requirement().defaultBlock());
             tooltip.addAll(stack.getTooltipLines(net.minecraft.world.item.Item.TooltipContext.EMPTY,
                 net.minecraft.client.Minecraft.getInstance().player, net.minecraft.world.item.TooltipFlag.Default.NORMAL));
             tooltip.add(Component.literal("x" + material.count()));
@@ -45,7 +46,7 @@ final class JeiMaterialStripWidget implements IRecipeWidget, IJeiGuiEventListene
         var material = MaterialStrip.at(state, stripX(mouseX), stripY(mouseY));
         IJeiRuntime runtime = UniversalMultiblockViewerJeiPlugin.runtime();
         if (material != null && runtime != null) {
-            runtime.getRecipesGui().show(runtime.getJeiHelpers().getFocusFactory().createFocus(RecipeIngredientRole.INPUT, VanillaTypes.ITEM_STACK, ViewerIngredientResolver.stackFor(material.requirement().defaultBlock())));
+            runtime.getRecipesGui().show(runtime.getJeiHelpers().getFocusFactory().createFocus(RecipeIngredientRole.INPUT, VanillaTypes.ITEM_STACK, ViewerIngredientResolver.materialStackFor(material.requirement().defaultBlock())));
             return true;
         }
         return false;

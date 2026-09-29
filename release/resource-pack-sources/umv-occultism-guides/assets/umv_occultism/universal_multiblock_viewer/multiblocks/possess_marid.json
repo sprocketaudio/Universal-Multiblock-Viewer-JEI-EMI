@@ -1,0 +1,174 @@
+{
+  "format": 1,
+  "id": "umv_occultism:possess_marid",
+  "title": "Xeovrenth Adjure",
+  "description": "Use a Marid in an extremely dangerous possession ritual.",
+  "provenance": {
+    "source_mod": "occultism",
+    "tested_version": "1.224.4",
+    "notes": "Verified against Occultism 1.224.4 ritual data."
+  },
+  "lookups": {
+    "U": [
+      "occultism:golden_sacrificial_bowl"
+    ]
+  },
+  "default_variant": "ritual_layout",
+  "variants": [
+    {
+      "id": "ritual_layout",
+      "title": "Ritual layout",
+      "palette": {
+        "0": {
+          "label": "Central sacrificial bowl",
+          "any_of": [
+            {
+              "block": "occultism:golden_sacrificial_bowl"
+            },
+            {
+              "tag": "occultism:center_sacrificial_bowl"
+            }
+          ],
+          "default": "occultism:golden_sacrificial_bowl"
+        },
+        "1": {
+          "label": "Accepted candle",
+          "any_of": [
+            {
+              "block": "minecraft:candle"
+            },
+            {
+              "tag": "minecraft:candles"
+            }
+          ],
+          "default": "minecraft:candle"
+        },
+        "2": {
+          "block": "minecraft:skeleton_skull"
+        },
+        "3": {
+          "block": "occultism:spirit_attuned_crystal"
+        },
+        "4": {
+          "block": "minecraft:wither_skeleton_skull"
+        },
+        "K": {
+          "label": "Accepted glyphs black",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_black",
+              "material": { "item": "occultism:chalk_black", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:glyphs_black"
+            }
+          ],
+          "default": "occultism:chalk_glyph_black"
+        },
+        "L": {
+          "label": "Accepted glyphs lime",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_lime",
+              "material": { "item": "occultism:chalk_lime", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:glyphs_lime"
+            }
+          ],
+          "default": "occultism:chalk_glyph_lime"
+        },
+        "O": {
+          "label": "Accepted glyphs orange",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_orange",
+              "material": { "item": "occultism:chalk_orange", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:glyphs_orange"
+            }
+          ],
+          "default": "occultism:chalk_glyph_orange"
+        },
+        "R": {
+          "label": "Accepted glyphs red",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_red",
+              "material": { "item": "occultism:chalk_red", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:glyphs_red"
+            }
+          ],
+          "default": "occultism:chalk_glyph_red"
+        },
+        "U": {
+          "label": "Accepted glyphs blue",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_blue",
+              "material": { "item": "occultism:chalk_blue", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:glyphs_blue"
+            }
+          ],
+          "default": "occultism:chalk_glyph_blue"
+        },
+        "W": {
+          "label": "Accepted foundation glyphs any",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_white",
+              "material": { "item": "occultism:chalk_white", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:foundation_glyphs_any"
+            }
+          ],
+          "default": "occultism:chalk_glyph_white"
+        },
+        "Y": {
+          "label": "Accepted glyphs yellow",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_gold",
+              "material": { "item": "occultism:chalk_gold", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:glyphs_yellow"
+            }
+          ],
+          "default": "occultism:chalk_glyph_gold"
+        }
+      },
+      "layers": [
+        [
+          "                     ",
+          "          U          ",
+          "         Y4Y         ",
+          "        U Y U        ",
+          "       Y Y3Y Y       ",
+          "      U R L R U      ",
+          "     U3O L2L O3U     ",
+          "    Y O2Y W Y2O Y    ",
+          "   U R Y1K1K1Y R U   ",
+          "  Y Y L K Y K L Y Y  ",
+          " U4Y3L2W1Y0Y1W2L3Y4U ",
+          "  Y Y L K Y K L Y Y  ",
+          "   U R Y1K1K1Y R U   ",
+          "    Y O2Y W Y2O Y    ",
+          "     U3O L2L O3U     ",
+          "      U R L R U      ",
+          "       Y Y3Y Y       ",
+          "        U Y U        ",
+          "         Y4Y         ",
+          "          U          ",
+          "                     "
+        ]
+      ]
+    }
+  ]
+}

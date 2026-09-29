@@ -1,6 +1,12 @@
 package net.sprocketgames.universalmultiblockviewer.viewer;
 
 import java.util.Comparator;
+import java.util.List;
+import java.util.function.Function;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.EmptyBlockGetter;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import net.sprocketgames.universalmultiblockviewer.model.GridPos;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
@@ -11,8 +17,14 @@ public final class ViewportProjection {
     }
 
     public static GridPos findCell(ViewerState state, double mouseX, double mouseY, int width, int height) {
+        return findCell(state, mouseX, mouseY, width, height, position -> selectionBoxes(state, position));
+    }
+
+    static GridPos findCell(ViewerState state, double mouseX, double mouseY, int width, int height,
+                            Function<GridPos, List<AABB>> shapeResolver) {
+        Matrix4f transform = transform(state, width, height);
         return ViewerLayout.visibleCells(state).stream()
-            .map(position -> hit(state, position, mouseX, mouseY, width, height))
+            .map(position -> hit(transform, position, shapeResolver.apply(position), mouseX, mouseY))
             .filter(candidate -> candidate != null)
             .min(Comparator.comparingDouble((Candidate candidate) -> -candidate.depth)
                 .thenComparingDouble(candidate -> candidate.distance))
@@ -20,12 +32,23 @@ public final class ViewportProjection {
             .orElse(null);
     }
 
-    private static Candidate hit(ViewerState state, GridPos position, double mouseX, double mouseY, int width, int height) {
-        Matrix4f transform = transform(state, width, height);
-        Point[] corners = new Point[8];
-        for (int x = 0; x < 2; x++) for (int y = 0; y < 2; y++) for (int z = 0; z < 2; z++) {
-            corners[x * 4 + y * 2 + z] = project(transform, position.x() + x, position.y() + y, position.z() + z);
+    private static Candidate hit(Matrix4f transform, GridPos position, List<AABB> boxes, double mouseX, double mouseY) {
+        Candidate best = null;
+        for (AABB box : boxes) {
+            Candidate candidate = hitBox(transform, position, box, mouseX, mouseY);
+            if (candidate != null && (best == null || candidate.depth > best.depth)) best = candidate;
         }
+        return best;
+    }
+
+    private static Candidate hitBox(Matrix4f transform, GridPos position, AABB box, double mouseX, double mouseY) {
+        Point[] corners = new Point[8];
+        double[] xBounds = {box.minX, box.maxX};
+        double[] yBounds = {box.minY, box.maxY};
+        double[] zBounds = {box.minZ, box.maxZ};
+        for (int x = 0; x < 2; x++) for (int y = 0; y < 2; y++) for (int z = 0; z < 2; z++)
+            corners[x * 4 + y * 2 + z] = project(transform,
+                position.x() + xBounds[x], position.y() + yBounds[y], position.z() + zBounds[z]);
         int[][] faces = {{0, 1, 3, 2}, {4, 6, 7, 5}, {0, 4, 5, 1}, {2, 3, 7, 6}, {0, 2, 6, 4}, {1, 5, 7, 3}};
         Candidate best = null;
         for (int[] face : faces) {
@@ -39,6 +62,21 @@ public final class ViewportProjection {
         return best;
     }
 
+    /** Uses the block's authored selection shape. A full cube is only a last-resort fallback. */
+    static List<AABB> selectionBoxes(ViewerState state, GridPos position) {
+        var option = state.displayedBlock(position);
+        if (option == null) return List.of();
+        try {
+            var blockState = ViewerIngredientResolver.stateFor(option);
+            var shape = blockState.getShape(EmptyBlockGetter.INSTANCE, BlockPos.ZERO, CollisionContext.empty());
+            List<AABB> boxes = shape.toAabbs();
+            if (!boxes.isEmpty()) return boxes;
+        } catch (RuntimeException ignored) {
+            // A mod may require a real level for its dynamic shape. Keep that block selectable.
+        }
+        return List.of(new AABB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D));
+    }
+
     private static Matrix4f transform(ViewerState state, int width, int height) {
         int maximum = Math.max(state.variant().width(), Math.max(state.variant().height(), state.variant().depth()));
         float scale = Math.max(4.5F, 42.0F / maximum) * (float) state.zoom();
@@ -50,8 +88,8 @@ public final class ViewportProjection {
             .translate(-state.variant().width() / 2.0F, -state.variant().height() / 2.0F, -state.variant().depth() / 2.0F);
     }
 
-    private static Point project(Matrix4f transform, float x, float y, float z) {
-        Vector4f point = new Vector4f(x, y, z, 1.0F).mul(transform);
+    private static Point project(Matrix4f transform, double x, double y, double z) {
+        Vector4f point = new Vector4f((float) x, (float) y, (float) z, 1.0F).mul(transform);
         return new Point(point.x, point.y, point.z);
     }
 

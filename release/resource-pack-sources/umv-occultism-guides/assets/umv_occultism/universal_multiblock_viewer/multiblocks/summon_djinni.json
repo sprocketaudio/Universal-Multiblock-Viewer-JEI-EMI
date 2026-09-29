@@ -1,0 +1,108 @@
+{
+  "format": 1,
+  "id": "umv_occultism:summon_djinni",
+  "title": "Ophyx' Calling",
+  "description": "Summon a Djinni for mid-tier rituals, machines, and familiar magic.",
+  "provenance": {
+    "source_mod": "occultism",
+    "tested_version": "1.224.4",
+    "notes": "Verified against Occultism 1.224.4 ritual data."
+  },
+  "lookups": {
+    "U": [
+      "occultism:golden_sacrificial_bowl"
+    ]
+  },
+  "default_variant": "ritual_layout",
+  "variants": [
+    {
+      "id": "ritual_layout",
+      "title": "Ritual layout",
+      "palette": {
+        "0": {
+          "label": "Central sacrificial bowl",
+          "any_of": [
+            {
+              "block": "occultism:golden_sacrificial_bowl"
+            },
+            {
+              "tag": "occultism:center_sacrificial_bowl"
+            }
+          ],
+          "default": "occultism:golden_sacrificial_bowl"
+        },
+        "1": {
+          "label": "Accepted candle",
+          "any_of": [
+            {
+              "block": "minecraft:candle"
+            },
+            {
+              "tag": "minecraft:candles"
+            }
+          ],
+          "default": "minecraft:candle"
+        },
+        "2": {
+          "block": "minecraft:skeleton_skull"
+        },
+        "L": {
+          "label": "Accepted glyphs lime",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_lime",
+              "material": { "item": "occultism:chalk_lime", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:glyphs_lime"
+            }
+          ],
+          "default": "occultism:chalk_glyph_lime"
+        },
+        "S": {
+          "label": "Accepted foundation glyphs no white",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_light_gray",
+              "material": { "item": "occultism:chalk_light_gray", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:foundation_glyphs_no_white"
+            }
+          ],
+          "default": "occultism:chalk_glyph_light_gray"
+        },
+        "W": {
+          "label": "Accepted foundation glyphs any",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_white",
+              "material": { "item": "occultism:chalk_white", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:foundation_glyphs_any"
+            }
+          ],
+          "default": "occultism:chalk_glyph_white"
+        }
+      },
+      "layers": [
+        [
+          "             ",
+          "    LLLLL    ",
+          "   L L1L L   ",
+          "  L2 WWW 2L  ",
+          " L  W S W  L ",
+          " LLW 1S1 WLL ",
+          " L1WSS0SSW1L ",
+          " LLW 1S1 WLL ",
+          " L  W S W  L ",
+          "  L2 WWW 2L  ",
+          "   L L1L L   ",
+          "    LLLLL    ",
+          "             "
+        ]
+      ]
+    }
+  ]
+}

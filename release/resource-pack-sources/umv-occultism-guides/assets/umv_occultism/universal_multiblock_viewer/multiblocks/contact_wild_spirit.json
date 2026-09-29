@@ -1,0 +1,93 @@
+{
+  "format": 1,
+  "id": "umv_occultism:contact_wild_spirit",
+  "title": "Osorin's Unbound Calling",
+  "description": "Contact Wild Spirits for their unique possession and crafting rituals. This pentacle offers no protection to the occultist.",
+  "provenance": {
+    "source_mod": "occultism",
+    "tested_version": "1.224.4",
+    "notes": "Verified against Occultism 1.224.4 ritual data."
+  },
+  "lookups": {
+    "U": [
+      "occultism:golden_sacrificial_bowl"
+    ]
+  },
+  "default_variant": "ritual_layout",
+  "variants": [
+    {
+      "id": "ritual_layout",
+      "title": "Ritual layout",
+      "palette": {
+        "0": {
+          "label": "Central sacrificial bowl",
+          "any_of": [
+            {
+              "block": "occultism:golden_sacrificial_bowl"
+            },
+            {
+              "tag": "occultism:center_sacrificial_bowl"
+            }
+          ],
+          "default": "occultism:golden_sacrificial_bowl"
+        },
+        "A": {
+          "label": "Accepted glyphs light blue",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_light_blue",
+              "material": { "item": "occultism:chalk_light_blue", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:glyphs_light_blue"
+            }
+          ],
+          "default": "occultism:chalk_glyph_light_blue"
+        },
+        "E": {
+          "label": "Accepted glyphs green",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_green",
+              "material": { "item": "occultism:chalk_green", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:glyphs_green"
+            }
+          ],
+          "default": "occultism:chalk_glyph_green"
+        },
+        "P": {
+          "label": "Accepted glyphs pink",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_pink",
+              "material": { "item": "occultism:chalk_pink", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:glyphs_pink"
+            }
+          ],
+          "default": "occultism:chalk_glyph_pink"
+        }
+      },
+      "layers": [
+        [
+          "             ",
+          "      P      ",
+          "  A AE EA A  ",
+          "    PE EP    ",
+          "  APA P APA  ",
+          "  EE     EE  ",
+          " P  P 0 P  P ",
+          "  EE     EE  ",
+          "  APA P APA  ",
+          "    PE EP    ",
+          "  A AE EA A  ",
+          "      P      ",
+          "             "
+        ]
+      ]
+    }
+  ]
+}

@@ -1,0 +1,154 @@
+{
+  "format": 1,
+  "id": "umv_occultism:possess_afrit",
+  "title": "Posuc's Convocation",
+  "description": "Force an Afrit to possess a nearby creature, including powerful familiars.",
+  "provenance": {
+    "source_mod": "occultism",
+    "tested_version": "1.224.4",
+    "notes": "Verified against Occultism 1.224.4 ritual data."
+  },
+  "lookups": {
+    "U": [
+      "occultism:golden_sacrificial_bowl"
+    ]
+  },
+  "default_variant": "ritual_layout",
+  "variants": [
+    {
+      "id": "ritual_layout",
+      "title": "Ritual layout",
+      "palette": {
+        "0": {
+          "label": "Central sacrificial bowl",
+          "any_of": [
+            {
+              "block": "occultism:golden_sacrificial_bowl"
+            },
+            {
+              "tag": "occultism:center_sacrificial_bowl"
+            }
+          ],
+          "default": "occultism:golden_sacrificial_bowl"
+        },
+        "1": {
+          "label": "Accepted candle",
+          "any_of": [
+            {
+              "block": "minecraft:candle"
+            },
+            {
+              "tag": "minecraft:candles"
+            }
+          ],
+          "default": "minecraft:candle"
+        },
+        "2": {
+          "block": "minecraft:skeleton_skull"
+        },
+        "3": {
+          "block": "occultism:spirit_attuned_crystal"
+        },
+        "G": {
+          "label": "Accepted foundation glyphs dark",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_gray",
+              "material": { "item": "occultism:chalk_gray", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:foundation_glyphs_dark"
+            }
+          ],
+          "default": "occultism:chalk_glyph_gray"
+        },
+        "L": {
+          "label": "Accepted glyphs lime",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_lime",
+              "material": { "item": "occultism:chalk_lime", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:glyphs_lime"
+            }
+          ],
+          "default": "occultism:chalk_glyph_lime"
+        },
+        "O": {
+          "label": "Accepted glyphs orange",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_orange",
+              "material": { "item": "occultism:chalk_orange", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:glyphs_orange"
+            }
+          ],
+          "default": "occultism:chalk_glyph_orange"
+        },
+        "R": {
+          "label": "Accepted glyphs red",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_red",
+              "material": { "item": "occultism:chalk_red", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:glyphs_red"
+            }
+          ],
+          "default": "occultism:chalk_glyph_red"
+        },
+        "W": {
+          "label": "Accepted foundation glyphs any",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_white",
+              "material": { "item": "occultism:chalk_white", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:foundation_glyphs_any"
+            }
+          ],
+          "default": "occultism:chalk_glyph_white"
+        },
+        "Y": {
+          "label": "Accepted glyphs yellow",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_gold",
+              "material": { "item": "occultism:chalk_gold", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:glyphs_yellow"
+            }
+          ],
+          "default": "occultism:chalk_glyph_gold"
+        }
+      },
+      "layers": [
+        [
+          "                 ",
+          "        Y        ",
+          "       Y3Y       ",
+          "      R L R      ",
+          "     O L2L O     ",
+          "    O2Y W Y2O    ",
+          "   R Y1G1G1Y R   ",
+          "  Y L G Y G L Y  ",
+          " Y3L2W1Y0Y1W2L3Y ",
+          "  Y L G Y G L Y  ",
+          "   R Y1G1G1Y R   ",
+          "    O2Y W Y2O    ",
+          "     O L2L O     ",
+          "      R L R      ",
+          "       Y3Y       ",
+          "        Y        ",
+          "                 "
+        ]
+      ]
+    }
+  ]
+}

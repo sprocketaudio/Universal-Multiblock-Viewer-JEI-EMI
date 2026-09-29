@@ -1,0 +1,200 @@
+{
+  "format": 1,
+  "id": "umv_occultism:contact_eldritch_spirit",
+  "title": "Ronaza's Contact",
+  "description": "Contact Eldritch Spirits to unlock advanced ritual crafting and storage equipment.",
+  "provenance": {
+    "source_mod": "occultism",
+    "tested_version": "1.224.4",
+    "notes": "Verified against Occultism 1.224.4 ritual data."
+  },
+  "lookups": {
+    "U": [
+      "occultism:golden_sacrificial_bowl"
+    ]
+  },
+  "default_variant": "ritual_layout",
+  "variants": [
+    {
+      "id": "ritual_layout",
+      "title": "Ritual layout",
+      "palette": {
+        "0": {
+          "label": "Central sacrificial bowl",
+          "any_of": [
+            {
+              "block": "occultism:golden_sacrificial_bowl"
+            },
+            {
+              "tag": "occultism:center_sacrificial_bowl"
+            }
+          ],
+          "default": "occultism:golden_sacrificial_bowl"
+        },
+        "A": {
+          "label": "Accepted glyphs light blue",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_light_blue",
+              "material": { "item": "occultism:chalk_light_blue", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:glyphs_light_blue"
+            }
+          ],
+          "default": "occultism:chalk_glyph_light_blue"
+        },
+        "B": {
+          "label": "Accepted glyphs brown",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_brown",
+              "material": { "item": "occultism:chalk_brown", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:glyphs_brown"
+            }
+          ],
+          "default": "occultism:chalk_glyph_brown"
+        },
+        "C": {
+          "label": "Accepted glyphs cyan",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_cyan",
+              "material": { "item": "occultism:chalk_cyan", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:glyphs_cyan"
+            }
+          ],
+          "default": "occultism:chalk_glyph_cyan"
+        },
+        "E": {
+          "label": "Accepted glyphs green",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_green",
+              "material": { "item": "occultism:chalk_green", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:glyphs_green"
+            }
+          ],
+          "default": "occultism:chalk_glyph_green"
+        },
+        "M": {
+          "label": "Accepted glyphs magenta",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_magenta",
+              "material": { "item": "occultism:chalk_magenta", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:glyphs_magenta"
+            }
+          ],
+          "default": "occultism:chalk_glyph_magenta"
+        },
+        "P": {
+          "label": "Accepted glyphs pink",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_pink",
+              "material": { "item": "occultism:chalk_pink", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:glyphs_pink"
+            }
+          ],
+          "default": "occultism:chalk_glyph_pink"
+        },
+        "e": {
+          "block": "minecraft:lodestone"
+        },
+        "f": {
+          "block": "minecraft:end_rod"
+        },
+        "g": {
+          "block": "minecraft:amethyst_cluster"
+        },
+        "h": {
+          "label": "Accepted c:glass panes",
+          "any_of": [
+            {
+              "block": "minecraft:glass_pane"
+            },
+            {
+              "tag": "c:glass_panes"
+            }
+          ],
+          "default": "minecraft:glass_pane"
+        },
+        "i": {
+          "block": "minecraft:beacon"
+        },
+        "j": {
+          "label": "Accepted c:lightning rods",
+          "any_of": [
+            {
+              "block": "minecraft:lightning_rod"
+            },
+            {
+              "tag": "c:lightning_rods"
+            }
+          ],
+          "default": "minecraft:lightning_rod"
+        },
+        "k": {
+          "label": "Accepted c:enchanting tables",
+          "any_of": [
+            {
+              "block": "minecraft:enchanting_table"
+            },
+            {
+              "tag": "c:enchanting_tables"
+            }
+          ],
+          "default": "minecraft:enchanting_table"
+        },
+        "l": {
+          "label": "Accepted c:iron bars",
+          "any_of": [
+            {
+              "block": "minecraft:iron_bars"
+            },
+            {
+              "tag": "c:iron_bars"
+            }
+          ],
+          "default": "minecraft:iron_bars"
+        }
+      },
+      "layers": [
+        [
+          "                     ",
+          "          C          ",
+          "         CeC         ",
+          "         CMC         ",
+          "    BB  CMMMC  BB    ",
+          "    BlBBCMPMCBBfB    ",
+          "     BABAE EABAB     ",
+          "     BB PE EP BB     ",
+          "    CCAPA P APACC    ",
+          "  CCMMEE     EEMMCC  ",
+          " CkMMP  P 0 P  PMMgC ",
+          "  CCMMEE     EEMMCC  ",
+          "    CCAPA P APACC    ",
+          "     BB PE EP BB     ",
+          "     BABAE EABAB     ",
+          "    BjBBCMPMCBBhB    ",
+          "    BB  CMMMC  BB    ",
+          "         CMC         ",
+          "         CiC         ",
+          "          C          ",
+          "                     "
+        ]
+      ]
+    }
+  ]
+}

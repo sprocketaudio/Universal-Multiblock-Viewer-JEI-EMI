@@ -1,0 +1,144 @@
+{
+  "format": 1,
+  "id": "umv_occultism:summon_unbound_marid",
+  "title": "Tibira's Attraction",
+  "description": "Summon an uncontrolled and aggressive Marid for its essence.",
+  "provenance": {
+    "source_mod": "occultism",
+    "tested_version": "1.224.4",
+    "notes": "Verified against Occultism 1.224.4 ritual data."
+  },
+  "lookups": {
+    "U": [
+      "occultism:golden_sacrificial_bowl"
+    ]
+  },
+  "default_variant": "ritual_layout",
+  "variants": [
+    {
+      "id": "ritual_layout",
+      "title": "Ritual layout",
+      "palette": {
+        "0": {
+          "label": "Central sacrificial bowl",
+          "any_of": [
+            {
+              "block": "occultism:golden_sacrificial_bowl"
+            },
+            {
+              "tag": "occultism:center_sacrificial_bowl"
+            }
+          ],
+          "default": "occultism:golden_sacrificial_bowl"
+        },
+        "1": {
+          "label": "Accepted candle",
+          "any_of": [
+            {
+              "block": "minecraft:candle"
+            },
+            {
+              "tag": "minecraft:candles"
+            }
+          ],
+          "default": "minecraft:candle"
+        },
+        "2": {
+          "block": "minecraft:skeleton_skull"
+        },
+        "3": {
+          "block": "occultism:spirit_attuned_crystal"
+        },
+        "4": {
+          "block": "minecraft:wither_skeleton_skull"
+        },
+        "K": {
+          "label": "Accepted glyphs black",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_black",
+              "material": { "item": "occultism:chalk_black", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:glyphs_black"
+            }
+          ],
+          "default": "occultism:chalk_glyph_black"
+        },
+        "L": {
+          "label": "Accepted glyphs lime",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_lime",
+              "material": { "item": "occultism:chalk_lime", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:glyphs_lime"
+            }
+          ],
+          "default": "occultism:chalk_glyph_lime"
+        },
+        "O": {
+          "label": "Accepted glyphs orange",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_orange",
+              "material": { "item": "occultism:chalk_orange", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:glyphs_orange"
+            }
+          ],
+          "default": "occultism:chalk_glyph_orange"
+        },
+        "R": {
+          "label": "Accepted glyphs red",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_red",
+              "material": { "item": "occultism:chalk_red", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:glyphs_red"
+            }
+          ],
+          "default": "occultism:chalk_glyph_red"
+        },
+        "W": {
+          "label": "Accepted foundation glyphs any",
+          "any_of": [
+            {
+              "block": "occultism:chalk_glyph_white",
+              "material": { "item": "occultism:chalk_white", "kind": "reusable_tool" }
+            },
+            {
+              "tag": "occultism:foundation_glyphs_any"
+            }
+          ],
+          "default": "occultism:chalk_glyph_white"
+        }
+      },
+      "layers": [
+        [
+          "                 ",
+          "      OOOOO      ",
+          "  4 OOR 2 ROO 4  ",
+          "   OR LLLLL RO   ",
+          "  OR3L L1L L3RO  ",
+          "  O L2 WWW 2L O  ",
+          " ORL  W K W  LRO ",
+          " O LLW 1K1 WLL O ",
+          " O2L1WKK0KKW1L2O ",
+          " O LLW 1K1 WLL O ",
+          " ORL  W K W  LRO ",
+          "  O L2 WWW 2L O  ",
+          "  OR3L L1L L3RO  ",
+          "   OR LLLLL RO   ",
+          "  4 OOR 2 ROO 4  ",
+          "      OOOOO      ",
+          "                 "
+        ]
+      ]
+    }
+  ]
+}
