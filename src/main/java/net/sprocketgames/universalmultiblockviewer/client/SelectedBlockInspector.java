@@ -38,9 +38,9 @@ public final class SelectedBlockInspector {
             graphics.pose().scale(0.75F, 0.75F, 1.0F);
             graphics.drawString(font, "Right click cancel", 0, 0, 0xFFC9C1B4, false);
         } finally { graphics.pose().popPose(); }
-        drawSmall(font, graphics, "Left drag: rotate", left + 6, top + 70);
-        drawSmall(font, graphics, "Right drag: move", left + 6, top + 82);
-        drawSmall(font, graphics, "Wheel: zoom", left + 6, top + 94);
+        drawSmall(font, graphics, "Left drag: Rotate", left + 6, top + 70);
+        drawSmall(font, graphics, "Right drag: Move", left + 6, top + 82);
+        drawSmall(font, graphics, "Wheel: Zoom", left + 6, top + 94);
         } finally {
             graphics.disableScissor();
         }

@@ -42,7 +42,7 @@ public final class SelectedBlockOptions {
                 int y = Y + displayed * STEP - (int) Math.round(fraction * STEP);
                 graphics.fill(X - 1, y - 1, X + 17, y + 17, 0xFF6A6256);
                 graphics.fill(X, y, X + 16, y + 16, 0xFF2B2925);
-                graphics.renderItem(ViewerIngredientResolver.stackFor(requirement.options().get(option)), X, y);
+                ViewerItemIconRenderer.render(graphics, ViewerIngredientResolver.stackFor(requirement.options().get(option)), X, y);
             }
         } finally {
             graphics.disableScissor();

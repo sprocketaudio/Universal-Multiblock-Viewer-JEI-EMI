@@ -23,6 +23,8 @@ import net.sprocketgames.universalmultiblockviewer.viewer.ViewerPanelLayout;
 
 /** EMI recipe presentation using the same definition, material calculation, and projection as JEI. */
 public final class EmiMultiblockRecipe implements EmiRecipe {
+    private static final int CONTROL_SIZE = 11;
+    private static final int CONTROL_GAP = 1;
     private final MultiblockDefinition definition;
     private final ViewerState state;
 
@@ -96,12 +98,23 @@ public final class EmiMultiblockRecipe implements EmiRecipe {
             int viewportWidth = ViewerPanelLayout.viewportWidth(state);
             BlockModelViewportRenderer.render(state, graphics, viewportX, 0, viewportWidth, ViewerPanelLayout.CONTENT_HEIGHT);
             SelectedBlockOptions.render(state, graphics, viewportX, 0);
-            int resetX = viewportX + viewportWidth - 14 - 3;
-            int resetY = ViewerPanelLayout.CONTENT_HEIGHT - 14 - 3;
-            int backgroundX = resetX - 14 - 2;
-            ViewerButton.draw(graphics, Minecraft.getInstance().font, backgroundX, resetY, 14, 14,
+            int resetX = viewportX + controlX(viewportWidth, 0);
+            int resetY = ViewerPanelLayout.CONTENT_HEIGHT - CONTROL_SIZE - 3;
+            int gridX = viewportX + controlX(viewportWidth, 1);
+            int backgroundX = viewportX + controlX(viewportWidth, 2);
+            int alternativesX = viewportX + controlX(viewportWidth, 3);
+            if (state.hasOptionalBlocks()) {
+                ViewerButton.drawCompact(graphics, Minecraft.getInstance().font, viewportX + controlX(viewportWidth, 4),
+                    resetY, CONTROL_SIZE, CONTROL_SIZE, "O",
+                    state.showOptionalBlocks() ? ViewerButton.OPTIONAL_OUTLINE_ORANGE : 0xFF302D27);
+            }
+            ViewerButton.drawCompact(graphics, Minecraft.getInstance().font, alternativesX, resetY, CONTROL_SIZE, CONTROL_SIZE, "A",
+                state.showAlternativeHighlights() ? ViewerButton.ALTERNATIVE_OUTLINE_PURPLE : 0xFF302D27);
+            ViewerButton.drawCompact(graphics, Minecraft.getInstance().font, backgroundX, resetY, CONTROL_SIZE, CONTROL_SIZE,
                 state.darkViewportBackground() ? "D" : "L");
-            ViewerButton.draw(graphics, Minecraft.getInstance().font, resetX, resetY, 14, 14, "R");
+            ViewerButton.drawCompact(graphics, Minecraft.getInstance().font, gridX, resetY, CONTROL_SIZE, CONTROL_SIZE, "G",
+                state.showFloorGrid() ? ViewerButton.FLOOR_GRID_DARK_GREY : 0xFF302D27);
+            ViewerButton.drawCompact(graphics, Minecraft.getInstance().font, resetX, resetY, CONTROL_SIZE, CONTROL_SIZE, "R");
             EmiViewportInputHandler.record(state, graphics, 0, 0, ViewerPanelLayout.CONTENT_WIDTH, ViewerPanelLayout.CONTENT_HEIGHT);
         });
         widgets.addDrawable(net.sprocketgames.universalmultiblockviewer.client.MaterialStrip.X,
@@ -117,6 +130,10 @@ public final class EmiMultiblockRecipe implements EmiRecipe {
 
     private static void drawUnshadowedCentered(GuiGraphics graphics, Font font, String text, int centerX, int y) {
         graphics.drawString(font, text, centerX - font.width(text) / 2, y, 0xFF403B33, false);
+    }
+
+    private static int controlX(int viewportWidth, int indexFromRight) {
+        return viewportWidth - (indexFromRight + 1) * CONTROL_SIZE - indexFromRight * CONTROL_GAP - 3;
     }
 
     @Override

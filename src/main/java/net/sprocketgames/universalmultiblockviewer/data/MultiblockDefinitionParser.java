@@ -177,8 +177,8 @@ public final class MultiblockDefinitionParser {
                     JsonObject option = object(rawOptions.get(index), path + "." + entry.getKey() + ".any_of[" + index + "]");
                     options.add(parseOption(option, path + "." + entry.getKey() + ".any_of[" + index + "]"));
                 }
-                if (options.size() != options.stream().map(BlockOption::id).distinct().count()) {
-                    throw error(path + "." + entry.getKey() + ".any_of", "must not contain duplicate block or tag ids");
+                if (options.size() != options.stream().distinct().count()) {
+                    throw error(path + "." + entry.getKey() + ".any_of", "must not contain duplicate alternatives");
                 }
             } else {
                 throw error(path, "entry needs block, tag, or any_of");
@@ -198,7 +198,8 @@ public final class MultiblockDefinitionParser {
                 }
             }
             parsed.put(entry.getKey().charAt(0), new BlockRequirement(options, defaultOption,
-                value.has("label") ? string(value.get("label"), path + ".label") : ""));
+                value.has("label") ? string(value.get("label"), path + ".label") : "",
+                value.has("optional") && bool(value.get("optional"), path + ".optional")));
         }
         return Map.copyOf(parsed);
     }
@@ -288,6 +289,13 @@ public final class MultiblockDefinitionParser {
             throw error(path, "must be an integer");
         }
         return (int) parsed;
+    }
+
+    private static boolean bool(JsonElement value, String path) {
+        if (!value.isJsonPrimitive() || !value.getAsJsonPrimitive().isBoolean()) {
+            throw error(path, "must be true or false");
+        }
+        return value.getAsBoolean();
     }
 
     private static ResourceLocation id(String raw, String path) {

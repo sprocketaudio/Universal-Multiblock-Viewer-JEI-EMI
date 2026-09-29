@@ -12,10 +12,24 @@ public final class MultiblockMaterials {
     }
 
     public static List<MaterialEntry> forVariant(StructureVariant variant) {
-        Map<BlockRequirement, Integer> counts = new LinkedHashMap<>();
-        variant.cells().values().forEach(requirement -> counts.merge(requirement, 1, Integer::sum));
+        return entries(variant, false);
+    }
+
+    /** Optional cells are intentionally calculated separately from the required BOM. */
+    public static List<MaterialEntry> optionalForVariant(StructureVariant variant) {
+        return entries(variant, true);
+    }
+
+    private static List<MaterialEntry> entries(StructureVariant variant, boolean optional) {
+        // Requirements describe position semantics. The BOM describes presentation materials, so
+        // distinct positions that share an authored default must be counted in one stack.
+        Map<BlockOption, MaterialEntry> counts = new LinkedHashMap<>();
+        variant.cells().values().stream().filter(requirement -> requirement.optional() == optional).forEach(requirement ->
+            counts.compute(requirement.defaultBlock(), (block, previous) -> previous == null
+                ? new MaterialEntry(requirement, 1)
+                : new MaterialEntry(previous.requirement(), previous.count() + 1)));
         List<MaterialEntry> entries = new ArrayList<>();
-        counts.forEach((requirement, count) -> entries.add(new MaterialEntry(requirement, count)));
+        entries.addAll(counts.values());
         entries.sort(Comparator.comparing(entry -> entry.requirement().defaultBlock().id().toString()));
         return List.copyOf(entries);
     }

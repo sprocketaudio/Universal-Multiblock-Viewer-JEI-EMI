@@ -29,6 +29,9 @@ public final class ViewerState {
     private double panX;
     private double panY;
     private boolean darkViewportBackground = true;
+    private boolean showFloorGrid;
+    private boolean showAlternativeHighlights;
+    private boolean showOptionalBlocks;
     private int materialOffset;
     private double materialScroll;
     private double materialTargetScroll;
@@ -62,6 +65,10 @@ public final class ViewerState {
     public double panX() { return panX; }
     public double panY() { return panY; }
     public boolean darkViewportBackground() { return darkViewportBackground; }
+    public boolean showFloorGrid() { return showFloorGrid; }
+    public boolean showAlternativeHighlights() { return showAlternativeHighlights; }
+    public boolean showOptionalBlocks() { return showOptionalBlocks; }
+    public boolean hasOptionalBlocks() { return variant().cells().values().stream().anyMatch(BlockRequirement::optional); }
     public int materialOffset() { return materialOffset; }
     public double materialScroll() { return materialScroll; }
     public double materialTargetScroll() { return materialTargetScroll; }
@@ -73,14 +80,33 @@ public final class ViewerState {
         if (!definition.variants().containsKey(id)) {
             throw new IllegalArgumentException("unknown variant " + id);
         }
+        StructureVariant previousVariant = variant();
+        Map<GridPos, BlockOption> choicesToRetain = new HashMap<>();
+        selectedOptions.forEach((position, optionIndex) -> {
+            BlockRequirement requirement = previousVariant.cells().get(position);
+            if (requirement != null && optionIndex >= 0 && optionIndex < requirement.options().size()) {
+                choicesToRetain.put(position, requirement.options().get(optionIndex));
+            }
+        });
+        BlockOption selectedChoice = selected == null ? null : displayedBlock(selected);
         variantId = id;
         selectedOptions.clear();
+        choicesToRetain.forEach((position, choice) -> {
+            BlockRequirement requirement = variant().cells().get(position);
+            if (requirement == null) return;
+            int option = requirement.options().indexOf(choice);
+            if (option >= 0) selectedOptions.put(position, option);
+        });
         materialOffset = 0;
         materialScroll = 0.0D;
         materialTargetScroll = 0.0D;
         alternativeScroll = 0.0D;
         alternativeTargetScroll = 0.0D;
-        if (selected != null && !variant().cells().containsKey(selected)) {
+        if (selected != null && (!variant().cells().containsKey(selected)
+            || !variant().cells().get(selected).options().contains(selectedChoice))) {
+            selected = null;
+        }
+        if (selected != null && !showOptionalBlocks && variant().cells().get(selected).optional()) {
             selected = null;
         }
         if (layer >= variant().height()) {
@@ -113,7 +139,8 @@ public final class ViewerState {
     }
 
     public void selectOrToggle(GridPos position) {
-        if (position == null || !variant().cells().containsKey(position)) {
+        if (position == null || !variant().cells().containsKey(position)
+            || (!showOptionalBlocks && variant().cells().get(position).optional())) {
             return;
         }
         if (position.equals(selected)) {
@@ -209,6 +236,27 @@ public final class ViewerState {
         darkViewportBackground = !darkViewportBackground;
     }
 
+    /** Shows a visual-only, block-aligned floor grid beneath the current structure. */
+    public void toggleFloorGrid() {
+        showFloorGrid = !showFloorGrid;
+    }
+
+    /** Highlights positions that have more than one valid presentation material without changing them. */
+    public void toggleAlternativeHighlights() {
+        showAlternativeHighlights = !showAlternativeHighlights;
+    }
+
+    /** Shows optional structure cells without changing camera, layer, variant, or material scroll state. */
+    public void toggleOptionalBlocks() {
+        if (!hasOptionalBlocks()) return;
+        showOptionalBlocks = !showOptionalBlocks;
+        if (!showOptionalBlocks && selected != null && variant().cells().get(selected).optional()) {
+            selected = null;
+        }
+        // The optional group can change the strip's maximum range; retain its nearest valid position.
+        setMaterialOffset(materialOffset);
+    }
+
     /** Called when a host creates a newly opened recipe view. */
     public void resetViewportBackground() {
         darkViewportBackground = true;
@@ -283,7 +331,11 @@ public final class ViewerState {
     }
 
     private int materialMaximum() {
-        return Math.max(0, net.sprocketgames.universalmultiblockviewer.model.MultiblockMaterials.forVariant(variant()).size() - MATERIALS_VISIBLE);
+        int count = net.sprocketgames.universalmultiblockviewer.model.MultiblockMaterials.forVariant(variant()).size();
+        if (showOptionalBlocks) {
+            count += net.sprocketgames.universalmultiblockviewer.model.MultiblockMaterials.optionalForVariant(variant()).size();
+        }
+        return Math.max(0, count - MATERIALS_VISIBLE);
     }
 
 

@@ -19,6 +19,8 @@ import net.sprocketgames.universalmultiblockviewer.viewer.ViewerPanelLayout;
 
 /** Routes EMI screen input to the most recently rendered multiblock viewport. */
 final class EmiViewportInputHandler {
+    private static final int CONTROL_SIZE = 11;
+    private static final int CONTROL_GAP = 1;
     private static ActiveViewport active;
     private static ActiveViewport rotating;
     private static ActiveViewport scrollingAlternatives;
@@ -71,6 +73,27 @@ final class EmiViewportInputHandler {
         if (!inViewport(viewport.state(), x, y)) return;
         double viewportX = x - ViewerPanelLayout.viewportX(viewport.state());
         int viewportWidth = ViewerPanelLayout.viewportWidth(viewport.state());
+        if (event.getButton() == InputConstants.MOUSE_BUTTON_LEFT
+            && isAlternativeHighlightButton(viewportX, y, viewportWidth, viewport.height())) {
+            viewport.state().toggleAlternativeHighlights();
+            ViewerButton.playClick();
+            event.setCanceled(true);
+            return;
+        }
+        if (event.getButton() == InputConstants.MOUSE_BUTTON_LEFT
+            && isGridButton(viewport.state(), viewportX, y, viewportWidth, viewport.height())) {
+            viewport.state().toggleFloorGrid();
+            ViewerButton.playClick();
+            event.setCanceled(true);
+            return;
+        }
+        if (event.getButton() == InputConstants.MOUSE_BUTTON_LEFT
+            && isOptionalButton(viewport.state(), viewportX, y, viewportWidth, viewport.height())) {
+            viewport.state().toggleOptionalBlocks();
+            ViewerButton.playClick();
+            event.setCanceled(true);
+            return;
+        }
         if (event.getButton() == InputConstants.MOUSE_BUTTON_LEFT
             && isBackgroundButton(viewportX, y, viewportWidth, viewport.height())) {
             viewport.state().toggleViewportBackground();
@@ -172,6 +195,16 @@ final class EmiViewportInputHandler {
                 ViewerIngredientResolver.stackFor(viewport.state().selectedRequirement().options().get(option)), event.getMouseX(), event.getMouseY());
         } else if (isResetButton(viewportX, y, ViewerPanelLayout.viewportWidth(viewport.state()), viewport.height())) {
             event.getGuiGraphics().renderTooltip(Minecraft.getInstance().font, net.minecraft.network.chat.Component.literal("Reset view"), event.getMouseX(), event.getMouseY());
+        } else if (isGridButton(viewport.state(), viewportX, y, ViewerPanelLayout.viewportWidth(viewport.state()), viewport.height())) {
+            event.getGuiGraphics().renderTooltip(Minecraft.getInstance().font, net.minecraft.network.chat.Component.literal(
+                viewport.state().showFloorGrid() ? "Hide Floor Grid" : "Show Floor Grid"), event.getMouseX(), event.getMouseY());
+        } else if (isAlternativeHighlightButton(viewportX, y, ViewerPanelLayout.viewportWidth(viewport.state()), viewport.height())) {
+            event.getGuiGraphics().renderTooltip(Minecraft.getInstance().font, net.minecraft.network.chat.Component.literal(
+                viewport.state().showAlternativeHighlights() ? "Hide Alternative Highlights" : "Show Alternative Highlights"), event.getMouseX(), event.getMouseY());
+        } else if (isOptionalButton(viewport.state(), viewportX, y, ViewerPanelLayout.viewportWidth(viewport.state()), viewport.height())) {
+            event.getGuiGraphics().renderTooltip(Minecraft.getInstance().font,
+                net.minecraft.network.chat.Component.literal(viewport.state().showOptionalBlocks()
+                    ? "Hide Optional Blocks" : "Show Optional Blocks"), event.getMouseX(), event.getMouseY());
         } else if (isBackgroundButton(viewportX, y, ViewerPanelLayout.viewportWidth(viewport.state()), viewport.height())) {
             event.getGuiGraphics().renderTooltip(Minecraft.getInstance().font,
                 net.minecraft.network.chat.Component.literal(viewport.state().darkViewportBackground()
@@ -193,12 +226,33 @@ final class EmiViewportInputHandler {
     }
 
     private static boolean isResetButton(double x, double y, int width, int height) {
-        return x >= width - 17 && x < width - 3 && y >= height - 17 && y < height - 3;
+        return inControl(x, y, width, height, 0);
     }
 
     private static boolean isBackgroundButton(double x, double y, int width, int height) {
-        return x >= width - 2 * 14 - 2 - 3 && x < width - 14 - 2 - 3
-            && y >= height - 17 && y < height - 3;
+        return inControl(x, y, width, height, 2);
+    }
+
+    private static boolean isGridButton(ViewerState state, double x, double y, int width, int height) {
+        return inControl(x, y, width, height, 1);
+    }
+
+    private static boolean isAlternativeHighlightButton(double x, double y, int width, int height) {
+        return inControl(x, y, width, height, 3);
+    }
+
+    private static boolean isOptionalButton(ViewerState state, double x, double y, int width, int height) {
+        return state.hasOptionalBlocks() && inControl(x, y, width, height, 4);
+    }
+
+    private static int controlX(int width, int indexFromRight) {
+        return width - (indexFromRight + 1) * CONTROL_SIZE - indexFromRight * CONTROL_GAP - 3;
+    }
+
+    private static boolean inControl(double x, double y, int width, int height, int indexFromRight) {
+        int controlX = controlX(width, indexFromRight);
+        return x >= controlX && x < controlX + CONTROL_SIZE
+            && y >= height - CONTROL_SIZE - 3 && y < height - 3;
     }
 
     private static boolean inViewport(ViewerState state, double x, double y) {

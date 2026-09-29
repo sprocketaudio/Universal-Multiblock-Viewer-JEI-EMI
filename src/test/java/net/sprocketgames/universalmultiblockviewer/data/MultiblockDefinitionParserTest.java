@@ -1,10 +1,14 @@
 package net.sprocketgames.universalmultiblockviewer.data;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.gson.JsonParser;
 import net.minecraft.resources.ResourceLocation;
+import net.sprocketgames.universalmultiblockviewer.model.GridPos;
+import net.sprocketgames.universalmultiblockviewer.model.MultiblockDefinition;
 import org.junit.jupiter.api.Test;
 
 class MultiblockDefinitionParserTest {
@@ -20,6 +24,23 @@ class MultiblockDefinitionParserTest {
         assertEquals("minecraft:stone", definition.initialVariant().cells().values().iterator().next().defaultBlock().id().toString());
         assertEquals(java.util.List.of(ResourceLocation.parse("minecraft:stick")), definition.useLookupItems());
         assertEquals(java.util.List.of(ResourceLocation.parse("minecraft:stick"), ResourceLocation.parse("minecraft:lodestone")), definition.recipeLookupItems());
+    }
+
+    @Test
+    void parsesOptionalPaletteEntriesWithoutChangingRequiredDefinitions() {
+        MultiblockDefinition definition = MultiblockDefinitionParser.parse(ResourceLocation.parse("test:optional"), JsonParser.parseString("""
+            {"format":1,"title":"Optional","lookups":{"U":["minecraft:stone"]},"variants":[
+              {"id":"base","palette":{
+                "R":{"block":"minecraft:stone"},
+                "O":{"label":"Optional tagged choice","optional":true,"any_of":[{"tag":"test:optional_blocks"},{"block":"minecraft:dirt"}],"default":"minecraft:dirt"}
+              },"layers":[["RO"]]}
+            ]}
+            """).getAsJsonObject());
+
+        var cells = definition.variants().get("base").cells();
+        assertFalse(cells.get(new GridPos(0, 0, 0)).optional());
+        assertTrue(cells.get(new GridPos(1, 0, 0)).optional());
+        assertEquals(ResourceLocation.parse("minecraft:dirt"), cells.get(new GridPos(1, 0, 0)).defaultBlock().id());
     }
 
     @Test
@@ -90,6 +111,22 @@ class MultiblockDefinitionParserTest {
             ]}
             """);
         assertEquals("x", definition.initialVariant().cells().values().iterator().next().defaultBlock().stateProperties().get("axis"));
+    }
+
+    @Test
+    void preservesDistinctStatesOfTheSameExplicitBlockAsAlternatives() {
+        var definition = parse("""
+            {"format":1,"title":"States","lookups":{"U":["minecraft:stick"]},"variants":[
+              {"id":"base","palette":{"A":{"any_of":[
+                {"block":"minecraft:oak_log","state":{"axis":"x"}},
+                {"block":"minecraft:oak_log","state":{"axis":"z"}}
+              ],"default":"minecraft:oak_log"}},"layers":[["A"]]}
+            ]}
+            """);
+        var options = definition.initialVariant().cells().values().iterator().next().options();
+        assertEquals(2, options.size());
+        assertEquals("x", options.getFirst().stateProperties().get("axis"));
+        assertEquals("z", options.get(1).stateProperties().get("axis"));
     }
 
     private static net.sprocketgames.universalmultiblockviewer.model.MultiblockDefinition parse(String json) {

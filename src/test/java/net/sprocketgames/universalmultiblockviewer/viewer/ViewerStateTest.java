@@ -223,6 +223,41 @@ class ViewerStateTest {
     }
 
     @Test
+    void floorGridDefaultsOffAndDoesNotChangeViewerState() {
+        ViewerState state = new ViewerState(definition());
+        state.selectOrToggle(CELL);
+        state.zoomBy(3);
+
+        assertFalse(state.showFloorGrid());
+        state.toggleFloorGrid();
+
+        assertTrue(state.showFloorGrid());
+        assertEquals(CELL, state.selected());
+        assertEquals(1.3D, state.zoom());
+        assertEquals("base", state.variantId());
+    }
+
+    @Test
+    void alternativeHighlightsDefaultOffAndNeverChangeTheSelectedMaterial() {
+        BlockOption stone = new BlockOption(BlockOption.Kind.BLOCK, ResourceLocation.parse("minecraft:stone"));
+        BlockOption granite = new BlockOption(BlockOption.Kind.BLOCK, ResourceLocation.parse("minecraft:granite"));
+        BlockRequirement alternatives = new BlockRequirement(List.of(stone, granite), 0, "");
+        MultiblockDefinition definition = new MultiblockDefinition(ResourceLocation.parse("test:highlight"), "Test", "",
+            List.of(ResourceLocation.parse("minecraft:stick")), "base", Map.of("base",
+                new StructureVariant("base", "Base", 1, 1, 1, Map.of(CELL, alternatives))));
+        ViewerState state = new ViewerState(definition);
+        state.selectOrToggle(CELL);
+        state.setSelectedOption(1);
+
+        assertFalse(state.showAlternativeHighlights());
+        state.toggleAlternativeHighlights();
+
+        assertTrue(state.showAlternativeHighlights());
+        assertEquals(granite, state.displayedBlock(CELL));
+        assertEquals(CELL, state.selected());
+    }
+
+    @Test
     void helpPanelAnimatesBetweenExpandedAndCollapsedWidthsWithoutAffectingTheCamera() {
         ViewerState state = new ViewerState(definition());
         state.zoomBy(3);

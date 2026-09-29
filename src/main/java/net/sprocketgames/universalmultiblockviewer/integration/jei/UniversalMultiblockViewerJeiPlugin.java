@@ -36,7 +36,12 @@ public final class UniversalMultiblockViewerJeiPlugin implements IModPlugin {
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
         var definitions = MultiblockDefinitionRegistry.all();
-        UniversalMultiblockViewer.LOGGER.info("Universal Multiblock Viewer JEI registered {} recipe(s)", definitions.size());
+        int useItems = definitions.stream().mapToInt(definition -> definition.useLookupItems().size()).sum();
+        int recipeItems = definitions.stream().mapToInt(definition -> definition.recipeLookupItems().size()).sum();
+        UniversalMultiblockViewer.LOGGER.info(
+            "Universal Multiblock Viewer JEI registered {} guide(s), indexed {} U item(s) and {} R item(s)",
+            definitions.size(), useItems, recipeItems
+        );
         registration.addRecipes(JeiMultiblockCategory.TYPE, definitions);
     }
 

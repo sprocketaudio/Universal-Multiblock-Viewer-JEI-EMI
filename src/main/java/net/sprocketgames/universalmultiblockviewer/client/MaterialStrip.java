@@ -37,12 +37,32 @@ public final class MaterialStrip {
         try {
             int first = state.materialOffset();
             double fractional = state.materialScroll() - first;
+            int optionalStart = Integer.MAX_VALUE;
+            int optionalEnd = Integer.MIN_VALUE;
+            for (int index = 0; index <= VISIBLE && index + first < materials.size(); index++) {
+                if (!materials.get(index + first).requirement().optional()) continue;
+                int x = left + FIRST_ITEM + index * 19 - (int) Math.round(fractional * 19.0D);
+                optionalStart = Math.min(optionalStart, x - 2);
+                optionalEnd = Math.max(optionalEnd, x + 18);
+            }
+            if (optionalStart != Integer.MAX_VALUE) {
+                // One continuous group boundary distinguishes optional materials without putting
+                // a competing amber frame around every icon.
+                int groupTop = top + Y + 1;
+                int groupBottom = top + Y + 21;
+                graphics.fill(optionalStart, groupTop, optionalEnd, groupTop + 1, 0xFFB8873E);
+                graphics.fill(optionalStart, groupBottom - 1, optionalEnd, groupBottom, 0xFFB8873E);
+                graphics.fill(optionalStart, groupTop, optionalStart + 1, groupBottom, 0xFFB8873E);
+                graphics.fill(optionalEnd - 1, groupTop, optionalEnd, groupBottom, 0xFFB8873E);
+            }
             for (int index = 0; index <= VISIBLE && index + first < materials.size(); index++) {
                 MaterialEntry material = materials.get(index + first);
                 int x = left + FIRST_ITEM + index * 19 - (int) Math.round(fractional * 19.0D);
                 int y = top + Y + 3;
-                graphics.fill(x - 1, y - 1, x + 17, y + 17, 0xFF716B60);
-                graphics.renderItem(ViewerIngredientResolver.stackFor(material.requirement().defaultBlock()), x, y);
+                if (!material.requirement().optional()) {
+                    graphics.fill(x - 1, y - 1, x + 17, y + 17, 0xFF716B60);
+                }
+                ViewerItemIconRenderer.render(graphics, ViewerIngredientResolver.stackFor(material.requirement().defaultBlock()), x, y);
                 String count = Integer.toString(material.count());
                 graphics.pose().pushPose();
                 try {
@@ -87,5 +107,14 @@ public final class MaterialStrip {
         return true;
     }
 
-    private static List<MaterialEntry> materials(ViewerState state) { return MultiblockMaterials.forVariant(state.variant()); }
+    public static List<MaterialEntry> materials(ViewerState state) {
+        List<MaterialEntry> required = MultiblockMaterials.forVariant(state.variant());
+        if (!state.showOptionalBlocks()) return required;
+        List<MaterialEntry> optional = MultiblockMaterials.optionalForVariant(state.variant());
+        if (optional.isEmpty()) return required;
+        var combined = new java.util.ArrayList<MaterialEntry>(required.size() + optional.size());
+        combined.addAll(required);
+        combined.addAll(optional);
+        return List.copyOf(combined);
+    }
 }

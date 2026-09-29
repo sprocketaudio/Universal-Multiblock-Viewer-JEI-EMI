@@ -25,7 +25,12 @@ public final class UniversalMultiblockViewerEmiPlugin implements EmiPlugin {
         registerInputHandlers();
         registry.addCategory(CATEGORY);
         var definitions = MultiblockDefinitionRegistry.all();
-        UniversalMultiblockViewer.LOGGER.info("Universal Multiblock Viewer EMI registered {} recipe(s)", definitions.size());
+        int useItems = definitions.stream().mapToInt(definition -> definition.useLookupItems().size()).sum();
+        int recipeItems = definitions.stream().mapToInt(definition -> definition.recipeLookupItems().size()).sum();
+        UniversalMultiblockViewer.LOGGER.info(
+            "Universal Multiblock Viewer EMI registered {} guide(s), indexed {} U item(s) and {} R item(s)",
+            definitions.size(), useItems, recipeItems
+        );
         definitions.forEach(definition -> {
             registry.addRecipe(new EmiMultiblockRecipe(definition));
         });

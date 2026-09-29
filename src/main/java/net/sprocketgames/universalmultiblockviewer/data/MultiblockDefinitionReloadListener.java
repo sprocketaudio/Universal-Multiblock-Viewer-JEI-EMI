@@ -2,8 +2,12 @@ package net.sprocketgames.universalmultiblockviewer.data;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Stream;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -15,10 +19,18 @@ import net.neoforged.fml.ModList;
 import net.sprocketgames.universalmultiblockviewer.UniversalMultiblockViewer;
 import net.sprocketgames.universalmultiblockviewer.model.MultiblockDefinition;
 import net.sprocketgames.universalmultiblockviewer.model.MultiblockMaterials;
+import net.sprocketgames.universalmultiblockviewer.model.ResolvedAlternatives;
+import net.sprocketgames.universalmultiblockviewer.model.StructureVariant;
 
 /** Loads client resource definitions from the universal_multiblock_viewer/multiblocks directory. */
 public final class MultiblockDefinitionReloadListener extends SimpleJsonResourceReloadListener {
     public static final MultiblockDefinitionReloadListener INSTANCE = new MultiblockDefinitionReloadListener();
+    /**
+     * Keep the authored form separate from its registry-dependent display form. Block tags are
+     * synchronised after client resources on a remote server, so resolving only while parsing
+     * can otherwise permanently leave a guide with an incomplete alternative list.
+     */
+    private volatile Map<ResourceLocation, MultiblockDefinition> authoredDefinitions = Map.of();
 
     private MultiblockDefinitionReloadListener() {
         super(new Gson(), "universal_multiblock_viewer/multiblocks");
@@ -29,7 +41,7 @@ public final class MultiblockDefinitionReloadListener extends SimpleJsonResource
         Map<ResourceLocation, MultiblockDefinition> loaded = new LinkedHashMap<>();
         int parsed = 0;
         int resolved = 0;
-        int bomValid = 0;
+        int accepted = 0;
         for (Map.Entry<ResourceLocation, JsonElement> entry : resources.entrySet()) {
             ResourceLocation source = entry.getKey();
             try {
@@ -40,19 +52,71 @@ public final class MultiblockDefinitionReloadListener extends SimpleJsonResource
                 parsed++;
                 validateResolvedReferences(definition);
                 resolved++;
-                validateMaterials(definition);
-                bomValid++;
                 warnIfGuideVersionDiffers(definition);
                 if (loaded.putIfAbsent(definition.id(), definition) != null) {
                     throw new IllegalArgumentException("duplicate definition id " + definition.id());
                 }
+                accepted++;
             } catch (RuntimeException exception) {
                 UniversalMultiblockViewer.LOGGER.error("Skipping invalid multiblock definition {}: {}", source, exception.getMessage());
             }
         }
-        MultiblockDefinitionRegistry.replace(loaded);
-        UniversalMultiblockViewer.LOGGER.info("Universal Multiblock Viewer definition health: discovered {}, parsed {}, resolved {}, BOM-valid {}, rejected {}",
-            resources.size(), parsed, resolved, bomValid, resources.size() - bomValid);
+        authoredDefinitions = Collections.unmodifiableMap(new LinkedHashMap<>(loaded));
+        refreshResolvedDefinitions();
+        UniversalMultiblockViewer.LOGGER.info("Universal Multiblock Viewer definition health: discovered {}, parsed {}, resolved {}, accepted {}, rejected {}",
+            resources.size(), parsed, resolved, accepted, resources.size() - accepted);
+    }
+
+    /** Rebuilds concrete alternatives after Minecraft has rebound the live block tags. */
+    public void refreshResolvedDefinitions() {
+        Map<ResourceLocation, MultiblockDefinition> resolved = new LinkedHashMap<>();
+        Set<ResourceLocation> missingTags = ConcurrentHashMap.newKeySet();
+        int bomValid = 0;
+        for (MultiblockDefinition definition : authoredDefinitions.values()) {
+            try {
+                MultiblockDefinition expanded = resolveAlternatives(definition, missingTags);
+                validateMaterials(expanded);
+                resolved.put(expanded.id(), expanded);
+                bomValid++;
+            } catch (RuntimeException exception) {
+                UniversalMultiblockViewer.LOGGER.error("Skipping multiblock definition {} after tag expansion: {}",
+                    definition.id(), exception.getMessage());
+            }
+        }
+        MultiblockDefinitionRegistry.replace(resolved);
+        UniversalMultiblockViewer.LOGGER.info("Universal Multiblock Viewer tag expansion health: {} definitions, {} BOM-valid",
+            authoredDefinitions.size(), bomValid);
+    }
+
+    private static MultiblockDefinition resolveAlternatives(MultiblockDefinition definition, Set<ResourceLocation> missingTags) {
+        Map<String, StructureVariant> variants = new LinkedHashMap<>();
+        definition.variants().forEach((variantId, variant) -> {
+            var cells = new LinkedHashMap<net.sprocketgames.universalmultiblockviewer.model.GridPos,
+                net.sprocketgames.universalmultiblockviewer.model.BlockRequirement>();
+            variant.cells().forEach((position, requirement) -> cells.put(position,
+                ResolvedAlternatives.resolve(requirement,
+                    tag -> blocksInTag(definition.id(), variantId, position, tag, missingTags))));
+            variants.put(variantId, new StructureVariant(variant.id(), variant.title(), variant.width(),
+                variant.height(), variant.depth(), cells));
+        });
+        return new MultiblockDefinition(definition.id(), definition.title(), definition.description(),
+            definition.useLookupItems(), definition.recipeLookupItems(), definition.defaultVariant(), variants,
+            definition.titleKey(), definition.descriptionKey(), definition.provenance());
+    }
+
+    private static Stream<ResourceLocation> blocksInTag(ResourceLocation definitionId, String variantId,
+                                                         net.sprocketgames.universalmultiblockviewer.model.GridPos position,
+                                                         ResourceLocation tag, Set<ResourceLocation> missingTags) {
+        var values = BuiltInRegistries.BLOCK.getTag(TagKey.create(Registries.BLOCK, tag));
+        if (values.isEmpty()) {
+            if (missingTags.add(tag)) {
+                UniversalMultiblockViewer.LOGGER.warn(
+                    "Definition {} variant '{}' cell {} cannot resolve block tag '{}'; alternatives will refresh when Minecraft updates its tags",
+                    definitionId, variantId, position, tag);
+            }
+            return Stream.empty();
+        }
+        return values.get().stream().map(holder -> BuiltInRegistries.BLOCK.getKey(holder.value()));
     }
 
     private static void validateResolvedReferences(MultiblockDefinition definition) {
@@ -86,11 +150,6 @@ public final class MultiblockDefinitionReloadListener extends SimpleJsonResource
                         }
                     }
                 }
-                if (option.kind() == net.sprocketgames.universalmultiblockviewer.model.BlockOption.Kind.TAG
-                    && BuiltInRegistries.BLOCK.getTag(TagKey.create(Registries.BLOCK, option.id())).isEmpty()) {
-                    UniversalMultiblockViewer.LOGGER.warn("Definition {} variant '{}' cell {} references block tag '{}' before client tags are available; it will resolve when tags load, or render as a missing-block fallback if it remains unavailable",
-                        definition.id(), variantId, position, option.id());
-                }
             })));
     }
 
@@ -99,7 +158,11 @@ public final class MultiblockDefinitionReloadListener extends SimpleJsonResource
         definition.variants().forEach((variantId, variant) -> {
             var materials = MultiblockMaterials.forVariant(variant);
             int representedCells = materials.stream().mapToInt(entry -> entry.count()).sum();
-            if (materials.isEmpty() || representedCells != variant.cells().size()) {
+            int requiredCells = (int) variant.cells().values().stream().filter(requirement -> !requirement.optional()).count();
+            int optionalCells = (int) variant.cells().values().stream().filter(requirement -> requirement.optional()).count();
+            int representedOptionalCells = MultiblockMaterials.optionalForVariant(variant).stream().mapToInt(entry -> entry.count()).sum();
+            if ((requiredCells > 0 && materials.isEmpty()) || representedCells != requiredCells
+                || representedOptionalCells != optionalCells) {
                 throw new IllegalArgumentException("variant '" + variantId + "' has an inconsistent bill of materials");
             }
         });

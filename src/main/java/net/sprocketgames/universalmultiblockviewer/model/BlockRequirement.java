@@ -4,7 +4,10 @@ import java.util.List;
 import java.util.Objects;
 
 /** A palette entry and its presentation default. Alternatives are never double-counted in the BOM. */
-public record BlockRequirement(List<BlockOption> options, int defaultOption, String label) {
+public record BlockRequirement(List<BlockOption> options, int defaultOption, String label, boolean optional) {
+    public BlockRequirement(List<BlockOption> options, int defaultOption, String label) {
+        this(options, defaultOption, label, false);
+    }
     public BlockRequirement {
         options = List.copyOf(options);
         if (options.isEmpty()) {
