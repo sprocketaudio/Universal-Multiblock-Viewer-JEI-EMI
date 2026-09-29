@@ -9,7 +9,7 @@ Universal Multiblock Viewer lets players explore multiblock structures directly 
 Ready-made multiblock guides are available as separate optional resource packs:
 
 - [Forbidden Arcanus Guides](https://www.curseforge.com/minecraft/texture-packs/universal-multiblock-viewer-forbidden-arcanus)
-- [Neo Vitae and Blood Magic Guides](https://www.curseforge.com/minecraft/texture-packs/universal-multiblock-viewer-neo-vitae-blood-magic)
+- [Neo Vitae (Blood Magic) Guides](https://www.curseforge.com/minecraft/texture-packs/universal-multiblock-viewer-neo-vitae-blood-magic)
 - [Occultism Guides](https://www.curseforge.com/minecraft/texture-packs/universal-multiblock-viewer-occultism)
 
 Install the pack for a supported mod alongside Universal Multiblock Viewer to add its guides. More guide packs can be added independently without updating the mod itself.
