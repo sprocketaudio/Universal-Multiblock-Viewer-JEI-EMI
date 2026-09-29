@@ -20,6 +20,7 @@ import net.sprocketgames.universalmultiblockviewer.viewer.ViewerLayout;
 import net.sprocketgames.universalmultiblockviewer.viewer.ViewportProjection;
 import net.sprocketgames.universalmultiblockviewer.viewer.ViewerState;
 import net.sprocketgames.universalmultiblockviewer.viewer.ViewerPanelLayout;
+import net.sprocketgames.universalmultiblockviewer.dev.DevInstantBuildClient;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 
@@ -45,6 +46,7 @@ final class JeiViewportWidget implements IRecipeWidget, IJeiGuiEventListener, me
     private boolean gridClick;
     private boolean alternativeHighlightClick;
     private boolean optionalClick;
+    private boolean buildClick;
     private boolean alternativeScrollbarClick;
     /** Prevents JEI drag events from a different widget using the previous camera drag origin. */
     private boolean viewportPointerCaptured;
@@ -66,15 +68,15 @@ final class JeiViewportWidget implements IRecipeWidget, IJeiGuiEventListener, me
         SelectedBlockOptions.render(state, graphics, viewportX, 0);
         int resetX = viewportX + controlX(viewportWidth, 0);
         int resetY = HEIGHT - CONTROL_SIZE - 3;
-        int gridX = viewportX + controlX(viewportWidth, 1);
-        int backgroundX = viewportX + controlX(viewportWidth, 2);
-        int alternativesX = viewportX + controlX(viewportWidth, 3);
+        int gridX = viewportX + controlX(viewportWidth, 2);
+        int backgroundX = viewportX + controlX(viewportWidth, 3);
+        int alternativesX = viewportX + controlX(viewportWidth, 4);
         if (hasDescription()) {
             ViewerButton.drawCompactInfo(graphics, net.minecraft.client.Minecraft.getInstance().font,
                 viewportX + viewportWidth - CONTROL_SIZE - 3, 3);
         }
         if (state.hasOptionalBlocks()) {
-            ViewerButton.drawCompact(graphics, net.minecraft.client.Minecraft.getInstance().font, viewportX + controlX(viewportWidth, 4), resetY, CONTROL_SIZE, CONTROL_SIZE, "O",
+            ViewerButton.drawCompact(graphics, net.minecraft.client.Minecraft.getInstance().font, viewportX + controlX(viewportWidth, 5), resetY, CONTROL_SIZE, CONTROL_SIZE, "O",
                 state.showOptionalBlocks() ? ViewerButton.OPTIONAL_OUTLINE_ORANGE : 0xFF302D27);
         }
         ViewerButton.drawCompact(graphics, net.minecraft.client.Minecraft.getInstance().font, alternativesX, resetY, CONTROL_SIZE, CONTROL_SIZE, "A",
@@ -83,6 +85,7 @@ final class JeiViewportWidget implements IRecipeWidget, IJeiGuiEventListener, me
             state.darkViewportBackground() ? "D" : "L");
         ViewerButton.drawCompact(graphics, net.minecraft.client.Minecraft.getInstance().font, gridX, resetY, CONTROL_SIZE, CONTROL_SIZE, "G",
             state.showFloorGrid() ? ViewerButton.FLOOR_GRID_DARK_GREY : 0xFF302D27);
+        if (DevInstantBuildClient.available()) ViewerButton.drawCompact(graphics, net.minecraft.client.Minecraft.getInstance().font, viewportX + controlX(viewportWidth, 1), resetY, CONTROL_SIZE, CONTROL_SIZE, "B");
         ViewerButton.drawCompact(graphics, net.minecraft.client.Minecraft.getInstance().font, resetX, resetY, CONTROL_SIZE, CONTROL_SIZE, "R");
         graphics.flush();
     }
@@ -102,7 +105,9 @@ final class JeiViewportWidget implements IRecipeWidget, IJeiGuiEventListener, me
                     net.minecraft.world.item.TooltipFlag.Default.NORMAL));
             return;
         }
-        if (isResetButton(viewportMouseX, mouseY, viewportWidth())) {
+        if (isBuildButton(viewportMouseX, mouseY, viewportWidth())) {
+            tooltip.add(Component.literal("Dev: Build Here"));
+        } else if (isResetButton(viewportMouseX, mouseY, viewportWidth())) {
             tooltip.add(Component.literal("Reset view"));
         } else if (isInfoIndicator(viewportMouseX, mouseY, viewportWidth())) {
             tooltip.addAll(ViewerTooltip.description(net.minecraft.client.Minecraft.getInstance().font,
@@ -136,6 +141,13 @@ final class JeiViewportWidget implements IRecipeWidget, IJeiGuiEventListener, me
         int viewportWidth = viewportWidth();
         if (isInfoIndicator(viewportMouseX, mouseY, viewportWidth)) {
             viewportPointerCaptured = false;
+            return true;
+        }
+        if (button == InputConstants.MOUSE_BUTTON_LEFT && isBuildButton(viewportMouseX, mouseY, viewportWidth)) {
+            viewportPointerCaptured = false;
+            DevInstantBuildClient.buildHere(state);
+            ViewerButton.playClick();
+            buildClick = true;
             return true;
         }
         if (button == InputConstants.MOUSE_BUTTON_LEFT && isAlternativeHighlightButton(viewportMouseX, mouseY, viewportWidth)) {
@@ -229,6 +241,10 @@ final class JeiViewportWidget implements IRecipeWidget, IJeiGuiEventListener, me
             resetClick = false;
             return true;
         }
+        if (button == InputConstants.MOUSE_BUTTON_LEFT && buildClick) {
+            buildClick = false;
+            return true;
+        }
         if (button == InputConstants.MOUSE_BUTTON_LEFT && selectedItemLeftClick) {
             selectedItemLeftClick = false;
             return true;
@@ -303,19 +319,23 @@ final class JeiViewportWidget implements IRecipeWidget, IJeiGuiEventListener, me
     }
 
     static boolean isBackgroundButton(double mouseX, double mouseY, int width) {
-        return inControl(mouseX, mouseY, width, 2);
-    }
-
-    private boolean isGridButton(double mouseX, double mouseY, int width) {
-        return inControl(mouseX, mouseY, width, 1);
-    }
-
-    private boolean isAlternativeHighlightButton(double mouseX, double mouseY, int width) {
         return inControl(mouseX, mouseY, width, 3);
     }
 
+    private boolean isGridButton(double mouseX, double mouseY, int width) {
+        return inControl(mouseX, mouseY, width, 2);
+    }
+
+    private boolean isAlternativeHighlightButton(double mouseX, double mouseY, int width) {
+        return inControl(mouseX, mouseY, width, 4);
+    }
+
     private boolean isOptionalButton(double mouseX, double mouseY, int width) {
-        return state.hasOptionalBlocks() && inControl(mouseX, mouseY, width, 4);
+        return state.hasOptionalBlocks() && inControl(mouseX, mouseY, width, 5);
+    }
+
+    private static boolean isBuildButton(double mouseX, double mouseY, int width) {
+        return DevInstantBuildClient.available() && inControl(mouseX, mouseY, width, 1);
     }
 
     private boolean hasDescription() {

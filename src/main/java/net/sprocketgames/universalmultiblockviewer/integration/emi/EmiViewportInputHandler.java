@@ -17,6 +17,7 @@ import net.sprocketgames.universalmultiblockviewer.client.ViewerTooltip;
 import net.sprocketgames.universalmultiblockviewer.client.SelectedBlockOptions;
 import net.sprocketgames.universalmultiblockviewer.client.SelectedBlockInspector;
 import net.sprocketgames.universalmultiblockviewer.viewer.ViewerPanelLayout;
+import net.sprocketgames.universalmultiblockviewer.dev.DevInstantBuildClient;
 
 /** Routes EMI screen input to the most recently rendered multiblock viewport. */
 final class EmiViewportInputHandler {
@@ -75,6 +76,12 @@ final class EmiViewportInputHandler {
         double viewportX = x - ViewerPanelLayout.viewportX(viewport.state());
         int viewportWidth = ViewerPanelLayout.viewportWidth(viewport.state());
         if (isInfoIndicator(viewport.state(), viewportX, y, viewportWidth)) {
+            event.setCanceled(true);
+            return;
+        }
+        if (event.getButton() == InputConstants.MOUSE_BUTTON_LEFT && isBuildButton(viewportX, y, viewportWidth, viewport.height())) {
+            DevInstantBuildClient.buildHere(viewport.state());
+            ViewerButton.playClick();
             event.setCanceled(true);
             return;
         }
@@ -202,6 +209,8 @@ final class EmiViewportInputHandler {
             event.getGuiGraphics().renderTooltip(Minecraft.getInstance().font,
                 ViewerTooltip.descriptionVisual(Minecraft.getInstance().font, viewport.state().definition(), 200),
                 event.getMouseX(), event.getMouseY());
+        } else if (isBuildButton(viewportX, y, ViewerPanelLayout.viewportWidth(viewport.state()), viewport.height())) {
+            event.getGuiGraphics().renderTooltip(Minecraft.getInstance().font, net.minecraft.network.chat.Component.literal("Dev: Build Here"), event.getMouseX(), event.getMouseY());
         } else if (isResetButton(viewportX, y, ViewerPanelLayout.viewportWidth(viewport.state()), viewport.height())) {
             event.getGuiGraphics().renderTooltip(Minecraft.getInstance().font, net.minecraft.network.chat.Component.literal("Reset view"), event.getMouseX(), event.getMouseY());
         } else if (isGridButton(viewport.state(), viewportX, y, ViewerPanelLayout.viewportWidth(viewport.state()), viewport.height())) {
@@ -239,19 +248,23 @@ final class EmiViewportInputHandler {
     }
 
     private static boolean isBackgroundButton(double x, double y, int width, int height) {
-        return inControl(x, y, width, height, 2);
-    }
-
-    private static boolean isGridButton(ViewerState state, double x, double y, int width, int height) {
-        return inControl(x, y, width, height, 1);
-    }
-
-    private static boolean isAlternativeHighlightButton(double x, double y, int width, int height) {
         return inControl(x, y, width, height, 3);
     }
 
+    private static boolean isGridButton(ViewerState state, double x, double y, int width, int height) {
+        return inControl(x, y, width, height, 2);
+    }
+
+    private static boolean isAlternativeHighlightButton(double x, double y, int width, int height) {
+        return inControl(x, y, width, height, 4);
+    }
+
     private static boolean isOptionalButton(ViewerState state, double x, double y, int width, int height) {
-        return state.hasOptionalBlocks() && inControl(x, y, width, height, 4);
+        return state.hasOptionalBlocks() && inControl(x, y, width, height, 5);
+    }
+
+    private static boolean isBuildButton(double x, double y, int width, int height) {
+        return DevInstantBuildClient.available() && inControl(x, y, width, height, 1);
     }
 
     private static boolean isInfoIndicator(ViewerState state, double x, double y, int width) {
