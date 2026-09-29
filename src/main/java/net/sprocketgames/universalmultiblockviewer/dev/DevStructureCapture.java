@@ -105,7 +105,11 @@ public final class DevStructureCapture {
     private record StateKey(ResourceLocation blockId, Map<String, String> state) {
         static StateKey from(BlockState state) {
             Map<String, String> values = new LinkedHashMap<>(); BlockState defaults = state.getBlock().defaultBlockState();
-            state.getValues().forEach((property, value) -> { if (!defaults.getValue(property).equals(value)) values.put(property.getName(), propertyName(property, value)); });
+            state.getValues().forEach((property, value) -> {
+                if (!property.getName().equals("sign") && !defaults.getValue(property).equals(value)) {
+                    values.put(property.getName(), propertyName(property, value));
+                }
+            });
             return new StateKey(BuiltInRegistries.BLOCK.getKey(state.getBlock()), Map.copyOf(values));
         }
         @SuppressWarnings({"rawtypes", "unchecked"}) private static String propertyName(Property property, Comparable value) { return property.getName(value); }
