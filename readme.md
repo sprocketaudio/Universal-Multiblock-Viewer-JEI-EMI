@@ -32,6 +32,55 @@ The Celestial Orrery shown in screenshots is a fictional example structure creat
 - **Guide discovery:** Open guides through configured `U` and `R` lookups, use tooltip hints on linked items, or browse the in-game guide list.
 - **JEI and EMI support:** Works with JEI, EMI, or both installed.
 
+## Creative Build Here
+
+When you are in Creative mode, a green **B** button appears at the lower-left of the 3D preview. It lets you place the guide currently shown in the viewer without collecting its materials.
+
+Select **B** to enter placement preview mode. A wireframe copy of the structure follows the block you are looking at and uses the current variant, visible optional blocks, and selected alternatives.
+
+| Control | Action |
+| --- | --- |
+| Left click | Place the previewed structure |
+| Right click | Cancel placement preview |
+| Mouse wheel | Rotate the structure |
+| Ctrl + mouse wheel | Move the structure up or down |
+
+Build Here only places into air. If even one target position is occupied, no blocks are placed. It does not consume items, activate machines, form multiblocks, or run rituals.
+
+Use `/umv undo` in Creative mode to remove your most recent Build Here placement. If you changed a block after it was placed, UMV leaves that block untouched.
+
+Build Here is available to Creative players and does not require OP permission. In multiplayer, Universal Multiblock Viewer must be installed on both the client and server because block placement is a server action.
+
+## In-Game Guide Capture
+
+Pack authors can capture an existing in-world structure into a new JSON guide. This tool requires **KubeJS** and **OP permission**. If KubeJS is not installed, UMV explains this in-game instead of creating a file that cannot load.
+
+1. Look at one corner of the structure and run `/umv corner1`.
+2. Look at the opposite corner and run `/umv corner2`.
+3. Look at the controller or main lookup block and run one of these commands:
+
+   ```text
+   /umv master U
+   /umv master R
+   /umv master both
+   ```
+
+4. Save the guide with a namespace and file name:
+
+   ```text
+   /umv save your_namespace your_structure
+   ```
+
+For example, `/umv save umv_arcane_factory_2 hephaestus_forge` creates:
+
+```text
+kubejs/assets/umv_arcane_factory_2/universal_multiblock_viewer/multiblocks/hephaestus_forge.json
+```
+
+Missing namespace folders are created automatically. Use `/umv clear` to discard the current capture.
+
+`/umv reload` reloads resources and refreshes UMV guide pages in JEI. EMI does not provide a public runtime guide-registration API, so restart Minecraft to add a new guide page when using EMI.
+
 ## Creating and Installing Guides
 
 Guides are JSON files created by modpack authors and guide creators. No custom Java code or animated tutorials are required.
@@ -47,6 +96,6 @@ See the [JSON Authoring Guide](JSON%20Authoring.md) for the complete format, exa
 
 ## Future Plans
 
-Potential future additions include more companion guide packs, easier creator tools, in-game structure capture, and compatibility with additional structure-definition formats where practical.
+Potential future additions include more companion guide packs, additional creator tools, and compatibility with additional structure-definition formats where practical.
 
 **Minecraft 1.21.1 | NeoForge | JEI / EMI**
