@@ -29,4 +29,17 @@ class DevInstantBuildPlanTest {
         state.toggleOptionalBlocks();
         assertEquals(List.of(granite, granite), DevInstantBuildPlan.from(state).placements().stream().map(DevInstantBuildPlan.Placement::option).toList());
     }
+
+    @Test void rotatesAndNormalisesTheBuildFootprint() {
+        BlockOption stone = new BlockOption(BlockOption.Kind.BLOCK, ResourceLocation.parse("minecraft:stone"));
+        DevInstantBuildPlan plan = new DevInstantBuildPlan("Rotation", List.of(
+            new DevInstantBuildPlan.Placement(new GridPos(0, 0, 0), stone),
+            new DevInstantBuildPlan.Placement(new GridPos(2, 0, 1), stone)
+        ));
+
+        assertEquals(List.of(new GridPos(1, 0, 0), new GridPos(0, 0, 2)),
+            plan.rotatedPlacements(1).stream().map(DevInstantBuildPlan.Placement::offset).toList());
+        assertEquals(List.of(new GridPos(2, 0, 1), new GridPos(0, 0, 0)),
+            plan.rotatedPlacements(2).stream().map(DevInstantBuildPlan.Placement::offset).toList());
+    }
 }

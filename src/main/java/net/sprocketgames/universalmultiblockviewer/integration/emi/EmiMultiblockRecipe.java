@@ -102,15 +102,15 @@ public final class EmiMultiblockRecipe implements EmiRecipe {
             SelectedBlockOptions.render(state, graphics, viewportX, 0);
             int resetX = viewportX + controlX(viewportWidth, 0);
             int resetY = ViewerPanelLayout.CONTENT_HEIGHT - CONTROL_SIZE - 3;
-            int gridX = viewportX + controlX(viewportWidth, 2);
-            int backgroundX = viewportX + controlX(viewportWidth, 3);
-            int alternativesX = viewportX + controlX(viewportWidth, 4);
+            int gridX = viewportX + controlX(viewportWidth, 1);
+            int backgroundX = viewportX + controlX(viewportWidth, 2);
+            int alternativesX = viewportX + controlX(viewportWidth, 3);
             if (!state.definition().displayDescription().isBlank()) {
                 ViewerButton.drawCompactInfo(graphics, Minecraft.getInstance().font,
                     viewportX + viewportWidth - CONTROL_SIZE - 3, 3);
             }
             if (state.hasOptionalBlocks()) {
-                ViewerButton.drawCompact(graphics, Minecraft.getInstance().font, viewportX + controlX(viewportWidth, 5), resetY, CONTROL_SIZE, CONTROL_SIZE, "O",
+                ViewerButton.drawCompact(graphics, Minecraft.getInstance().font, viewportX + controlX(viewportWidth, 4), resetY, CONTROL_SIZE, CONTROL_SIZE, "O",
                     state.showOptionalBlocks() ? ViewerButton.OPTIONAL_OUTLINE_ORANGE : 0xFF302D27);
             }
             ViewerButton.drawCompact(graphics, Minecraft.getInstance().font, alternativesX, resetY, CONTROL_SIZE, CONTROL_SIZE, "A",
@@ -119,7 +119,8 @@ public final class EmiMultiblockRecipe implements EmiRecipe {
                 state.darkViewportBackground() ? "D" : "L");
             ViewerButton.drawCompact(graphics, Minecraft.getInstance().font, gridX, resetY, CONTROL_SIZE, CONTROL_SIZE, "G",
                 state.showFloorGrid() ? ViewerButton.FLOOR_GRID_DARK_GREY : 0xFF302D27);
-            if (DevInstantBuildClient.available()) ViewerButton.drawCompact(graphics, Minecraft.getInstance().font, viewportX + controlX(viewportWidth, 1), resetY, CONTROL_SIZE, CONTROL_SIZE, "B");
+            if (DevInstantBuildClient.available()) ViewerButton.drawCompact(graphics, Minecraft.getInstance().font,
+                viewportX + 3, resetY, CONTROL_SIZE, CONTROL_SIZE, "B", ViewerButton.BUILD_GREEN);
             ViewerButton.drawCompact(graphics, Minecraft.getInstance().font, resetX, resetY, CONTROL_SIZE, CONTROL_SIZE, "R");
             EmiViewportInputHandler.record(state, graphics, 0, 0, ViewerPanelLayout.CONTENT_WIDTH, ViewerPanelLayout.CONTENT_HEIGHT);
         });

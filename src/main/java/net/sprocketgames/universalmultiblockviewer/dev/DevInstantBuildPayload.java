@@ -13,20 +13,22 @@ import net.sprocketgames.universalmultiblockviewer.UniversalMultiblockViewer;
 import net.sprocketgames.universalmultiblockviewer.model.BlockOption;
 import net.sprocketgames.universalmultiblockviewer.model.GridPos;
 
-public record DevInstantBuildPayload(BlockPos anchor, String title, List<Placement> placements) implements CustomPacketPayload {
+public record DevInstantBuildPayload(BlockPos anchor, String title, int quarterTurns, List<Placement> placements) implements CustomPacketPayload {
     public static final Type<DevInstantBuildPayload> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(UniversalMultiblockViewer.MOD_ID, "dev_instant_build"));
     public static final StreamCodec<FriendlyByteBuf, DevInstantBuildPayload> STREAM_CODEC = StreamCodec.of(DevInstantBuildPayload::write, DevInstantBuildPayload::read);
 
     public record Placement(GridPos offset, ResourceLocation blockId, Map<String, String> stateProperties) { }
 
-    public static DevInstantBuildPayload from(BlockPos anchor, DevInstantBuildPlan plan) {
-        return new DevInstantBuildPayload(anchor, plan.title(), plan.placements().stream().map(placement ->
+    public static DevInstantBuildPayload from(BlockPos anchor, DevInstantBuildPlan plan, int quarterTurns) {
+        return new DevInstantBuildPayload(anchor, plan.title(), Math.floorMod(quarterTurns, 4), plan.rotatedPlacements(quarterTurns).stream().map(placement ->
             new Placement(placement.offset(), placement.option().id(), placement.option().stateProperties())).toList());
     }
 
     private static DevInstantBuildPayload read(FriendlyByteBuf buffer) {
         BlockPos anchor = BlockPos.of(buffer.readLong());
         String title = readString(buffer, 128);
+        int quarterTurns = buffer.readVarInt();
+        if (quarterTurns < 0 || quarterTurns > 3) throw new IllegalArgumentException("invalid rotation " + quarterTurns);
         int count = buffer.readVarInt();
         if (count < 1 || count > 4096) throw new IllegalArgumentException("invalid placement count " + count);
         List<Placement> placements = new ArrayList<>(count);
@@ -39,12 +41,13 @@ public record DevInstantBuildPayload(BlockPos anchor, String title, List<Placeme
             for (int state = 0; state < states; state++) properties.put(readString(buffer, 64), readString(buffer, 128));
             placements.add(new Placement(offset, id, Map.copyOf(properties)));
         }
-        return new DevInstantBuildPayload(anchor, title, List.copyOf(placements));
+        return new DevInstantBuildPayload(anchor, title, quarterTurns, List.copyOf(placements));
     }
 
     private static void write(FriendlyByteBuf buffer, DevInstantBuildPayload payload) {
         buffer.writeLong(payload.anchor.asLong());
         writeString(buffer, payload.title, 128);
+        buffer.writeVarInt(payload.quarterTurns);
         buffer.writeVarInt(payload.placements.size());
         for (Placement placement : payload.placements) {
             buffer.writeVarInt(placement.offset.x()); buffer.writeVarInt(placement.offset.y()); buffer.writeVarInt(placement.offset.z());

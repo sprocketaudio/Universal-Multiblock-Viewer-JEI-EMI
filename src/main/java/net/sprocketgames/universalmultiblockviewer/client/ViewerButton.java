@@ -12,6 +12,7 @@ public final class ViewerButton {
     private static final int EDGE = 0xFF6E685D;
     private static final int FACE = 0xFF302D27;
     public static final int OPTIONAL_OUTLINE_ORANGE = 0xFFD18C2E;
+    public static final int BUILD_GREEN = 0xFF4B9B59;
     public static final int ALTERNATIVE_OUTLINE_PURPLE = 0xFFA147E0;
     public static final int FLOOR_GRID_DARK_GREY = 0xFF68645E;
 

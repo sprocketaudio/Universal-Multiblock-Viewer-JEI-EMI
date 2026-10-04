@@ -68,15 +68,15 @@ final class JeiViewportWidget implements IRecipeWidget, IJeiGuiEventListener, me
         SelectedBlockOptions.render(state, graphics, viewportX, 0);
         int resetX = viewportX + controlX(viewportWidth, 0);
         int resetY = HEIGHT - CONTROL_SIZE - 3;
-        int gridX = viewportX + controlX(viewportWidth, 2);
-        int backgroundX = viewportX + controlX(viewportWidth, 3);
-        int alternativesX = viewportX + controlX(viewportWidth, 4);
+        int gridX = viewportX + controlX(viewportWidth, 1);
+        int backgroundX = viewportX + controlX(viewportWidth, 2);
+        int alternativesX = viewportX + controlX(viewportWidth, 3);
         if (hasDescription()) {
             ViewerButton.drawCompactInfo(graphics, net.minecraft.client.Minecraft.getInstance().font,
                 viewportX + viewportWidth - CONTROL_SIZE - 3, 3);
         }
         if (state.hasOptionalBlocks()) {
-            ViewerButton.drawCompact(graphics, net.minecraft.client.Minecraft.getInstance().font, viewportX + controlX(viewportWidth, 5), resetY, CONTROL_SIZE, CONTROL_SIZE, "O",
+            ViewerButton.drawCompact(graphics, net.minecraft.client.Minecraft.getInstance().font, viewportX + controlX(viewportWidth, 4), resetY, CONTROL_SIZE, CONTROL_SIZE, "O",
                 state.showOptionalBlocks() ? ViewerButton.OPTIONAL_OUTLINE_ORANGE : 0xFF302D27);
         }
         ViewerButton.drawCompact(graphics, net.minecraft.client.Minecraft.getInstance().font, alternativesX, resetY, CONTROL_SIZE, CONTROL_SIZE, "A",
@@ -85,7 +85,8 @@ final class JeiViewportWidget implements IRecipeWidget, IJeiGuiEventListener, me
             state.darkViewportBackground() ? "D" : "L");
         ViewerButton.drawCompact(graphics, net.minecraft.client.Minecraft.getInstance().font, gridX, resetY, CONTROL_SIZE, CONTROL_SIZE, "G",
             state.showFloorGrid() ? ViewerButton.FLOOR_GRID_DARK_GREY : 0xFF302D27);
-        if (DevInstantBuildClient.available()) ViewerButton.drawCompact(graphics, net.minecraft.client.Minecraft.getInstance().font, viewportX + controlX(viewportWidth, 1), resetY, CONTROL_SIZE, CONTROL_SIZE, "B");
+        if (DevInstantBuildClient.available()) ViewerButton.drawCompact(graphics, net.minecraft.client.Minecraft.getInstance().font,
+            viewportX + 3, resetY, CONTROL_SIZE, CONTROL_SIZE, "B", ViewerButton.BUILD_GREEN);
         ViewerButton.drawCompact(graphics, net.minecraft.client.Minecraft.getInstance().font, resetX, resetY, CONTROL_SIZE, CONTROL_SIZE, "R");
         graphics.flush();
     }
@@ -106,7 +107,7 @@ final class JeiViewportWidget implements IRecipeWidget, IJeiGuiEventListener, me
             return;
         }
         if (isBuildButton(viewportMouseX, mouseY, viewportWidth())) {
-            tooltip.add(Component.literal("Dev: Build Here"));
+            tooltip.add(Component.literal("Build Here"));
         } else if (isResetButton(viewportMouseX, mouseY, viewportWidth())) {
             tooltip.add(Component.literal("Reset view"));
         } else if (isInfoIndicator(viewportMouseX, mouseY, viewportWidth())) {
@@ -319,23 +320,24 @@ final class JeiViewportWidget implements IRecipeWidget, IJeiGuiEventListener, me
     }
 
     static boolean isBackgroundButton(double mouseX, double mouseY, int width) {
-        return inControl(mouseX, mouseY, width, 3);
-    }
-
-    private boolean isGridButton(double mouseX, double mouseY, int width) {
         return inControl(mouseX, mouseY, width, 2);
     }
 
+    private boolean isGridButton(double mouseX, double mouseY, int width) {
+        return inControl(mouseX, mouseY, width, 1);
+    }
+
     private boolean isAlternativeHighlightButton(double mouseX, double mouseY, int width) {
-        return inControl(mouseX, mouseY, width, 4);
+        return inControl(mouseX, mouseY, width, 3);
     }
 
     private boolean isOptionalButton(double mouseX, double mouseY, int width) {
-        return state.hasOptionalBlocks() && inControl(mouseX, mouseY, width, 5);
+        return state.hasOptionalBlocks() && inControl(mouseX, mouseY, width, 4);
     }
 
-    private static boolean isBuildButton(double mouseX, double mouseY, int width) {
-        return DevInstantBuildClient.available() && inControl(mouseX, mouseY, width, 1);
+    private boolean isBuildButton(double mouseX, double mouseY, int width) {
+        return DevInstantBuildClient.available() && mouseX >= 3 && mouseX < 3 + CONTROL_SIZE
+            && mouseY >= HEIGHT - CONTROL_SIZE - 3 && mouseY < HEIGHT - 3;
     }
 
     private boolean hasDescription() {

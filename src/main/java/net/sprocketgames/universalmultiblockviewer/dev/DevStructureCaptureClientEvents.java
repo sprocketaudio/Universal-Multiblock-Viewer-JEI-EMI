@@ -19,9 +19,11 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.sprocketgames.universalmultiblockviewer.UniversalMultiblockViewer;
+import net.sprocketgames.universalmultiblockviewer.client.RuntimeGuideRefresh;
 
 @EventBusSubscriber(modid = UniversalMultiblockViewer.MOD_ID, value = Dist.CLIENT)
 public final class DevStructureCaptureClientEvents {
@@ -31,12 +33,15 @@ public final class DevStructureCaptureClientEvents {
             .then(Commands.argument("namespace", StringArgumentType.word()).suggests(NAMESPACES)
                 .then(Commands.argument("file_name", StringArgumentType.word())
                     .executes(context -> save(StringArgumentType.getString(context, "namespace"), StringArgumentType.getString(context, "file_name")))));
-        event.getDispatcher().register(Commands.literal("umvdev")
-            .then(Commands.literal("corner1").executes(context -> corner(true)))
-            .then(Commands.literal("corner2").executes(context -> corner(false)))
-            .then(Commands.literal("master").then(Commands.argument("lookup", StringArgumentType.word()).suggests((context, builder) -> SharedSuggestionProvider.suggest(List.of("U", "R", "both"), builder)).executes(context -> master(StringArgumentType.getString(context, "lookup")))))
-            .then(Commands.literal("clear").executes(context -> { DevStructureCapture.clear(); message("UMV capture cleared."); return 1; }))
-            .then(save));
+        event.getDispatcher().register(Commands.literal("umv")
+            .then(Commands.literal("reload").executes(context -> reload()))
+            .then(Commands.literal("undo").executes(context -> DevInstantBuildClient.undo()))
+            .then(Commands.literal("corner1").requires(source -> DevInstantBuildClient.captureAvailable()).executes(context -> corner(true)))
+            .then(Commands.literal("corner2").requires(source -> DevInstantBuildClient.captureAvailable()).executes(context -> corner(false)))
+            .then(Commands.literal("master").requires(source -> DevInstantBuildClient.captureAvailable())
+                .then(Commands.argument("lookup", StringArgumentType.word()).suggests((context, builder) -> SharedSuggestionProvider.suggest(List.of("U", "R", "both"), builder)).executes(context -> master(StringArgumentType.getString(context, "lookup")))))
+            .then(Commands.literal("clear").requires(source -> DevInstantBuildClient.captureAvailable()).executes(context -> clear()))
+            .then(save.requires(source -> DevInstantBuildClient.captureAvailable())));
     }
     private static final SuggestionProvider<net.minecraft.commands.CommandSourceStack> NAMESPACES = (context, builder) -> {
         try {
@@ -46,19 +51,19 @@ public final class DevStructureCaptureClientEvents {
         return builder.buildFuture();
     };
     private static int corner(boolean first) {
-        if (!available()) return 0;
+        if (!requireKubeJs()) return 0;
         if (!(Minecraft.getInstance().hitResult instanceof BlockHitResult hit)) { message("Look at a block before marking a corner."); return 0; }
         if (first) { DevStructureCapture.setFirst(hit.getBlockPos()); message("UMV capture corner 1: " + hit.getBlockPos().toShortString()); }
         else { DevStructureCapture.setSecond(hit.getBlockPos()); message("UMV capture corner 2: " + hit.getBlockPos().toShortString()); }
         return 1;
     }
     private static int save(String namespace, String fileName) {
-        if (!available()) return 0;
+        if (!requireKubeJs()) return 0;
         try { message("Saved UMV capture: " + DevStructureCapture.save(namespace, fileName)); return 1; }
         catch (IllegalArgumentException | IllegalStateException | IOException exception) { message("UMV capture failed: " + exception.getMessage()); UniversalMultiblockViewer.LOGGER.warn("UMV capture save failed", exception); return 0; }
     }
     private static int master(String rawLookup) {
-        if (!available()) return 0;
+        if (!requireKubeJs()) return 0;
         if (!(Minecraft.getInstance().hitResult instanceof BlockHitResult hit)) { message("Look at a block before setting the master."); return 0; }
         try {
             var item = Minecraft.getInstance().level.getBlockState(hit.getBlockPos()).getBlock().asItem();
@@ -68,7 +73,41 @@ public final class DevStructureCaptureClientEvents {
             return 1;
         } catch (IllegalArgumentException exception) { message(exception.getMessage()); return 0; }
     }
-    private static boolean available() { return DevInstantBuildClient.available(); }
+    private static int clear() {
+        if (!requireKubeJs()) return 0;
+        DevStructureCapture.clear();
+        message("UMV capture cleared.");
+        return 1;
+    }
+    private static int reload() {
+        Minecraft minecraft = Minecraft.getInstance();
+        message("Reloading UMV resources...");
+        minecraft.reloadResourcePacks().whenComplete((ignored, failure) -> minecraft.execute(() -> {
+            if (failure != null) {
+                message("UMV resource reload failed. Check the log for details.");
+                UniversalMultiblockViewer.LOGGER.warn("UMV resource reload failed", failure);
+                return;
+            }
+            boolean jeiRefreshed = RuntimeGuideRefresh.refreshJei();
+            boolean emiInstalled = ModList.get().isLoaded("emi");
+            if (jeiRefreshed && emiInstalled) {
+                message("UMV guides reloaded in JEI. Restart Minecraft to update EMI guide pages.");
+            } else if (jeiRefreshed) {
+                message("UMV guides reloaded in JEI.");
+            } else if (emiInstalled) {
+                message("UMV resources reloaded. Restart Minecraft to update EMI guide pages.");
+            } else {
+                message("UMV resources reloaded.");
+            }
+        }));
+        return 1;
+    }
+    private static boolean available() { return DevInstantBuildClient.captureAvailable(); }
+    private static boolean requireKubeJs() {
+        if (ModList.get().isLoaded("kubejs")) return true;
+        message("UMV capture requires KubeJS. Install KubeJS, then restart Minecraft.");
+        return false;
+    }
     private static void message(String value) { var player = Minecraft.getInstance().player; if (player != null) player.displayClientMessage(Component.literal(value), false); }
     @SubscribeEvent public static void render(RenderLevelStageEvent event) {
         if (!available() || event.getStage() != RenderLevelStageEvent.Stage.AFTER_ENTITIES) return;
